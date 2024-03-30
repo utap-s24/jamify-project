@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "737482749375",
+    "project_id": "cs371m-project",
+    "storage_bucket": "cs371m-project.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:737482749375:android:9dc738e625472dc0911d0a",
+        "android_client_info": {
+          "package_name": "com.example.jamify"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA-aU_X4qt7uQ0xGI_RWZtT9jmmqrCkbhQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
