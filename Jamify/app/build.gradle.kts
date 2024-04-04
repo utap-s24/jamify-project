@@ -1,9 +1,10 @@
+
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
 //    kotlin("kapt") version "1.9.23"
     id("kotlin-kapt")
-
+    id("com.google.gms.google-services")
 
 }
 
