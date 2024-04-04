@@ -6,11 +6,16 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.MenuProvider
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.navigation.NavController
+import androidx.navigation.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupActionBarWithNavController
+import com.example.jamify.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -33,13 +38,21 @@ class MainActivity : AppCompatActivity() {
         addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                 // Inflate the menu; this adds items to the action bar if it is present.
-                menuInflater.inflate(R.menu.menu_main, menu)
+                menuInflater.inflate(R.menu.bottom_app_bar, menu)
             }
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 return when (menuItem.itemId) {
-                    R.id.menuLogout -> {
-                        authUser.logout()
+                    R.id.action_home-> {
+                        navController.navigate(R.id.homeFragment)
+                        true
+                    }
+                    R.id.action_add -> {
+                        navController.navigate(R.id.createFragment)
+                        true
+                    }
+                    R.id.action_profile -> {
+                        navController.navigate(R.id.profileFragment)
                         true
                     }
                     else -> false
@@ -57,11 +70,16 @@ class MainActivity : AppCompatActivity() {
         initMenu()
 
         // Set up our nav graph
-        navController = findNavController(R.id.mainFrame)
-        val appBarConfiguration = AppBarConfiguration(navController.graph)
-        setupActionBarWithNavController(navController, appBarConfiguration)
+        navController = findNavController(R.id.nav_host_fragment)
+//        val appBarConfiguration = AppBarConfiguration(navController.graph)
+//        setupActionBarWithNavController(navController, appBarConfiguration)
+        setSupportActionBar(findViewById(R.id.my_toolbar))
+
         // No need to override onSupportNavigateUp(), because no up navigation
+
+
     }
+
 
     // We can only safely initialize AuthUser once onCreate has completed.
     override fun onStart() {
@@ -76,9 +94,9 @@ class MainActivity : AppCompatActivity() {
             // XXX Write me, user status has changed
             viewModel.setCurrentAuthUser(user)
             progressBarOn()
-            viewModel.fetchPhotoMeta {
-                progressBarOff()
-            }
+//            viewModel.fetchPhotoMeta {
+//                progressBarOff()
+//            }
 
 
         }
