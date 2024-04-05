@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
 
         <!-- Replace the ImageView and TextView placeholders with your actual content -->
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/musicPlayerLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            >
             <ImageButton
                 android:id="@+id/musicplayerPlayButton"
                 android:layout_width="wrap_content"
@@ -26,27 +26,28 @@
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
                 android:padding="0dp"
-                android:src="@drawable/soundwaves_gif"
+                android:src="@drawable/rounded_staggered_music_bar"
                 app:layout_constraintStart_toEndOf="@id/musicplayerPlayButton"
                 app:layout_constraintTop_toTopOf="parent"
                />
-
-
         </androidx.constraintlayout.widget.ConstraintLayout>
-        <ImageView
-            android:id="@+id/postPhoto"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/post_image_ex"
-            android:layout_weight="2"
-            />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+    <ImageView
+        android:id="@+id/postPhoto"
+        android:layout_width="match_parent"
+        android:layout_height="500dp"
+        android:layout_weight="1"
+        android:scaleType="centerCrop"
+        android:src="@drawable/post_image_ex"
+        app:layout_constraintTop_toBottomOf="@id/musicPlayerLayout"
+        tools:layout_editor_absoluteX="0dp" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/ProfileUsernameMeta"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            app:layout_constraintTop_toBottomOf="@id/postPhoto"
             >
 
             <ImageView
@@ -70,12 +71,28 @@
                 app:layout_constraintStart_toEndOf="@id/postUserPhoto"
                 app:layout_constraintTop_toTopOf="parent"
                 />
+
+            <TextView
+                android:id="@+id/postLikesCountTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="123"
+
+                />
+
+            <ImageButton
+                android:id="@+id/postLikeButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:src=""
+                />
         </androidx.constraintlayout.widget.ConstraintLayout>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="this is fake caption that should show below the text"/>
+            android:text="this is fake caption that should show below the text"
+            app:layout_constraintTop_toBottomOf="@id/ProfileUsernameMeta"/>
 
-    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
