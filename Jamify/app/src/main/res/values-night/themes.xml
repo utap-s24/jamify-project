@@ -2,8 +2,8 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.Jamify" parent="Theme.AppCompat.DayNight.DarkActionBar">
         <!-- Customize your dark theme here. -->
-         <item name="colorPrimary">@color/purple</item>
-        <item name="colorSecondary">@color/gray</item>
-
+        <item name="colorPrimary">#0F9D58</item>
+        <item name="colorPrimaryDark">@color/purple</item>
+        <item name="colorAccent">@color/gray</item>
     </style>
 </resources>

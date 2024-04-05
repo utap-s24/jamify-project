@@ -1,15 +1,147 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:orientation="horizontal">
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+android:layout_margin="40dp"
+tools:context=".CreateFragment">
 
+
+
+
+    <EditText
+        android:layout_width="0dp"
+        android:id="@+id/searchText"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/search"
+        android:textSize="20sp"
+        android:hint="Search a song"
+        android:background="@drawable/rounded_edittext"
+
+        android:padding="3dp"
+
+        ></EditText>
+
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:id="@+id/search"
+        android:padding="5dp"
+        android:background="@drawable/button_rounded"
+        android:src="@drawable/baseline_search_24"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@+id/searchText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+
+        >
+
+    </ImageButton>
 
     <TextView
-            android:id="@+id/content"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/text_margin"
-            android:text="Create view"
-            android:textAppearance="?attr/textAppearanceListItem" />
-</LinearLayout>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/search"
+        android:text="Upload or take a photo."
+        android:textSize="25sp"
+        android:id="@+id/imageText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        >
+
+    </TextView>
+
+    <ImageButton
+        android:layout_width="0dp"
+        android:id="@+id/image"
+        android:layout_height="wrap_content"
+        android:src="@drawable/baseline_image_search_24"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageText"
+        >
+
+    </ImageButton>
+
+    <TextView
+
+        android:text="Caption"
+        android:id="@+id/captionTitle"
+        android:textSize="20sp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/image"
+        >
+
+    </TextView>
+
+    <TextView
+        android:text="Log your experience listening to the selected song by adding a diary entry or caption."
+        android:textSize="15sp"
+        android:id="@+id/captionInstructions"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/captionTitle"
+        >
+
+    </TextView>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:id="@+id/captionText"
+        android:layout_height="100dp"
+        android:textSize="15sp"
+        android:hint="Log your entry"
+        android:background="@drawable/rounded_box"
+        android:padding="4dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/captionInstructions"
+
+        ></EditText>
+
+    <Button
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Cancel"
+        android:textSize="15sp"
+
+        android:id="@+id/cancel"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/switchPrivacy"
+        app:layout_constraintBottom_toBottomOf="parent"
+       app:layout_constraintTop_toBottomOf="@+id/captionText"
+        ></Button>
+    <!--A switch is the right option for a Boolean choice -->
+<!--    <androidx.appcompat.widget.SwitchCompat-->
+<!--        android:id="@+id/switchPrivacy"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:padding="5dp"-->
+
+<!--        app:layout_constraintStart_toEndOf="@+id/cancel"-->
+<!--        app:layout_constraintEnd_toStartOf="@+id/create"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        />-->
+
+
+    <Button
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Create"
+        android:textSize="15sp"
+
+        android:id="@+id/create"
+        app:layout_constraintStart_toEndOf="@+id/switchPrivacy"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/captionText"
+
+        ></Button>
+</androidx.constraintlayout.widget.ConstraintLayout>
