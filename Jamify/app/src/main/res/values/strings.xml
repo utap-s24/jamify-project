@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">Jamify</string>
+    <string-array name="filter_options">
+        <item>Option 1</item>
+        <item>Option 2</item>
+        <item>Option 3</item>
+    </string-array>
+
+    <string-array name="sort_options">
+        <item>Oldest to newest</item>
+        <item>Newest to oldest</item>
+    </string-array>
 </resources>
