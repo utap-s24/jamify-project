@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".ProfileFragment"
+    tools:context=".ProfileActivity"
     android:layout_margin="8dp"
     android:orientation="vertical">
 
@@ -15,12 +15,17 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_margin="8dp">
+<!--        Elevation = reletive depth btw 2 surfaces-->
+<!--        android:elevation="6dp"-->
 
-        <ImageView
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/pofilePicImageView"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:src="@drawable/baseline_person_24"
+            app:shapeAppearanceOverlay="@style/Circular"
+            android:padding="4dp"
+            android:src="@drawable/baseline_account_circle_24"
+            android:scaleType="centerCrop"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             />

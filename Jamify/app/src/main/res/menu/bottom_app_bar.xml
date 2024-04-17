@@ -6,7 +6,7 @@
         android:icon="@drawable/home"/>
     <item android:id="@+id/createFragment"
         android:title="Create"
-        android:icon="@drawable/baseline_add_box_24"/>
+        android:icon="@drawable/round_add_box_24"/>
     <item
         android:id="@+id/profileFragment"
         android:title="Profile"

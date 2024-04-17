@@ -18,7 +18,7 @@ tools:context=".CreateFragment">
         app:layout_constraintEnd_toStartOf="@+id/search"
         android:textSize="20sp"
         android:hint="Search a song"
-        android:background="@drawable/rounded_edittext"
+        android:background="@drawable/rounded_rectangle_edittext"
 
         android:padding="3dp"
 

@@ -13,9 +13,9 @@
 
     <fragment
         android:id="@+id/profileFragment"
-        android:name="com.example.jamify.ProfileFragment"
+        android:name="com.example.jamify.ProfileActivity"
         android:label="Profile"
-        tools:layout="@layout/fragment_profile">
+        tools:layout="@layout/activity_profile">
 
     </fragment>
 
