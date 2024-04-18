@@ -72,20 +72,25 @@
                 app:layout_constraintTop_toTopOf="parent"
                 />
 
-            <TextView
-                android:id="@+id/postLikesCountTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="123"
+        <TextView
+            android:id="@+id/postLikesCountTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
 
-                />
+            android:text="123"
+            app:layout_constraintEnd_toStartOf="@id/postLikeButton"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            />
 
-            <ImageButton
+        <ImageButton
                 android:id="@+id/postLikeButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:src=""
+                android:src="@drawable/heart_button"
                 />
         </androidx.constraintlayout.widget.ConstraintLayout>
         <TextView

@@ -1,5 +1,6 @@
 package com.example.jamify
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -19,12 +20,15 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.jamify.databinding.ActivityMainBinding
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
     private lateinit var appBarConfiguration: AppBarConfiguration
-
+    private lateinit var auth: FirebaseAuth
+    private  var user: FirebaseUser? = null
     private lateinit var authUser : AuthUser
     private val viewModel: MainViewModel by viewModels()
     companion object {
@@ -82,12 +86,15 @@ class MainActivity : AppCompatActivity() {
         navController = findNavController(R.id.nav_host_fragment)
         binding.bottonnav.setupWithNavController(navController)
 
-//        val appBarConfiguration = AppBarConfiguration(navController.graph)
-//        setupActionBarWithNavController(navController, appBarConfiguration)
+        auth = FirebaseAuth.getInstance()
+        user = auth.currentUser
 
-
-        // No need to override onSupportNavigateUp(), because no up navigation
-
+        if (user == null){
+            //nav to Log in
+            val intent = Intent(this, LogInActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
 
     }
 
@@ -101,16 +108,29 @@ class MainActivity : AppCompatActivity() {
         // authUser needs to observe our lifecycle so it can run login activity
         lifecycle.addObserver(authUser)
 
-        authUser.observeUser().observe(this) { user->
-            // XXX Write me, user status has changed
-            viewModel.setCurrentAuthUser(user)
-//            progressBarOn()
-//            viewModel.fetchPhotoMeta {
-//                progressBarOff()
-//            }
 
+        //oki lets see if we set up own sign up properly
 
-        }
+        // Check if there's a current user
+//        val currentUser = ""
+//        if (currentUser != null) {
+//            // Navigate to home fragment if user is logged in
+////            navigateToHomeFragment()
+//        } else {
+//            // Navigate to sign-up screen if no user is logged in
+////            navigateToSignUpScreen()
+//        }
+
+//        authUser.observeUser().observe(this) { user->
+//            // XXX Write me, user status has changed
+//            viewModel.setCurrentAuthUser(user)
+////            progressBarOn()
+////            viewModel.fetchPhotoMeta {
+////                progressBarOff()
+////            }
+//
+//
+//        }
     }
 
     // navigateUp:
