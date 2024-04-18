@@ -49,7 +49,9 @@ class MainActivity : AppCompatActivity() {
         addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                 // Inflate the menu; this adds items to the action bar if it is present.
-                menuInflater.inflate(R.menu.settings, menu)
+                menuInflater.inflate(R.menu.bottom_app_bar, menu)
+//                menuInflater.inflate(R.menu.settings, menu)
+
             }
 
 

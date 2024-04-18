@@ -28,6 +28,12 @@
 
     </fragment>
 
+    <fragment
+        android:id="@+id/settingFragment"
+        android:name="com.example.jamify.SettingFragment"
+        android:label="setting"
+        tools:layout="@layout/fragment_setting"/>
+
     <!--    <fragment-->
     <!--        android:id="@+id/homeFragment"-->
     <!--&lt;!&ndash;        android:name="edu.utap.photolist.view.HomeFragment"&ndash;&gt;-->
