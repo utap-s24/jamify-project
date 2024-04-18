@@ -9,29 +9,13 @@
         android:name="com.example.jamify.HomeFragment"
         android:label="home"
         tools:layout="@layout/fragment_home">
-
-        <action
-            android:id="@+id/action_navigate_home_to_profile"
-            app:destination="@+id/profileFragment"/>
-
-        <action
-            android:id="@+id/action_navigate_home_to_create"
-            app:destination="@+id/createFragment"/>
-
     </fragment>
 
     <fragment
         android:id="@+id/profileFragment"
-        android:name="com.example.jamify.ProfileActivity"
+        android:name="com.example.jamify.ProfileFragment"
         android:label="Profile"
-        tools:layout="@layout/activity_profile">
-
-        <action
-            android:id="@+id/action_navigate_profile_to_home"
-            app:destination="@id/homeFragment"/>
-        <action
-            android:id="@+id/action_navigate_profile_to_create"
-            app:destination="@id/createFragment"/>
+        tools:layout="@layout/fragment_profile">
 
     </fragment>
 
@@ -42,16 +26,12 @@
         android:label="create"
         tools:layout="@layout/fragment_create">
 
-        <action
-            android:id="@+id/action_navigate_create_to_home"
-            app:destination="@id/homeFragment"/>
-        <action
-            android:id="@+id/action_navigate_create_to_profile"
-            app:destination="@id/profileFragment"/>
-
     </fragment>
 
-
+    <!--    <fragment-->
+    <!--        android:id="@+id/homeFragment"-->
+    <!--&lt;!&ndash;        android:name="edu.utap.photolist.view.HomeFragment"&ndash;&gt;-->
+    <!--        android:label="Photo list" />-->
 
 
 </navigation>

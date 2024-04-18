@@ -7,10 +7,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 
-class ProfileActivity : Fragment() {
+class ProfileFragment : Fragment() {
 
     companion object {
-        fun newInstance() = ProfileActivity()
+        fun newInstance() = ProfileFragment()
     }
 
     private val viewModel: ProfileViewModel by viewModels()
@@ -25,6 +25,6 @@ class ProfileActivity : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return inflater.inflate(R.layout.activity_profile, container, false)
+        return inflater.inflate(R.layout.fragment_profile, container, false)
     }
 }

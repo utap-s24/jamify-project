@@ -1,6 +1,7 @@
 package com.example.jamify
 
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -9,6 +10,7 @@ import android.view.MenuItem
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.MenuProvider
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -53,15 +55,18 @@ class MainActivity : AppCompatActivity() {
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 return when (menuItem.itemId) {
-                    R.id.home_fragment -> {
+                    R.id.homeFragment -> {
+//                        menuItem.iconTintList(arrayListOf(R.color.logo_purple, R.color.purple))
+
                         navController.navigate(R.id.homeFragment)
                         true
                     }
-                    R.id.profile_fragment -> {
+                    R.id.profileFragment -> {
                         navController.navigate(R.id.profileFragment)
                         true
                     }
-                    R.id.create_fragment -> {
+                    R.id.createFragment -> {
+
                         navController.navigate(R.id.createFragment)
                         true
                     }
