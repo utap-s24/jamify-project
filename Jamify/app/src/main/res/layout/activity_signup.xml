@@ -102,6 +102,18 @@
                 app:layout_constraintStart_toStartOf="parent"
                 android:background="@drawable/rounded_rectangle_edittext"
                 />
+            <TextView
+                android:id="@+id/missing_email_pass_textview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="10dp"
+
+                android:textColor="@color/red"
+                android:textSize="15sp"
+                android:gravity="center"
+
+                />
 
             <Button
                 android:id="@+id/signup_button"
@@ -115,20 +127,35 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 />
 
-            <TextView
-                android:id="@+id/login_redirect_text"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="Already have an account? Login"
-                android:textSize="16sp"
-                android:gravity="center"
+                android:orientation="horizontal">
 
-                />
+<!--                wrapping content for height cuts off ends of letters-->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="25dp"
+                    android:layout_marginTop="8dp"
+                    android:paddingEnd="0dp"
+                    android:text="Already have an account?"
+                    android:textSize="16sp"
+                    android:layout_gravity="center"
+                    android:layout_weight="0.7"
+                    />
 
+                <TextView
+                    android:id="@+id/login_redirect_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="25dp"
+                    android:layout_marginTop="8dp"
+                    android:text="Login"
+                    android:textSize="16sp"
+                    android:textColor="@color/logo_purple"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"/>
+            </LinearLayout>
         </LinearLayout>
-
-
     </LinearLayout>
 
 </ScrollView>

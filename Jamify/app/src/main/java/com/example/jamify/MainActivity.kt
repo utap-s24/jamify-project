@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.jamify.databinding.ActivityMainBinding
@@ -22,6 +23,8 @@ import com.example.jamify.databinding.ActivityMainBinding
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
+    private lateinit var appBarConfiguration: AppBarConfiguration
+
     private lateinit var authUser : AuthUser
     private val viewModel: MainViewModel by viewModels()
     companion object {
@@ -36,24 +39,33 @@ class MainActivity : AppCompatActivity() {
         binding.indeterminateBar.visibility = View.GONE
     }
 
-//    private fun initMenu() {
-//        addMenuProvider(object : MenuProvider {
-//            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-//                // Inflate the menu; this adds items to the action bar if it is present.
-//                menuInflater.inflate(R.menu.settings, menu)
-//            }
-//
-//
-//            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-//                return when (menuItem.itemId) {
-//                    R.id.action_home->navigate.
-//                    R.id.action_add->setCurrentFragment(secondFragment)
-//                    R.id.action_profile->setCurrentFragment(thirdFragment)
-////
-//                }
-//            }
-//        })
-//    }
+    private fun initMenu() {
+        addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                // Inflate the menu; this adds items to the action bar if it is present.
+                menuInflater.inflate(R.menu.settings, menu)
+            }
+
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                return when (menuItem.itemId) {
+                    R.id.home_fragment -> {
+                        navController.navigate(R.id.homeFragment)
+                        true
+                    }
+                    R.id.profile_fragment -> {
+                        navController.navigate(R.id.profileFragment)
+                        true
+                    }
+                    R.id.create_fragment -> {
+                        navController.navigate(R.id.createFragment)
+                        true
+                    }
+                    else -> false
+                }
+            }
+        })
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -99,5 +111,13 @@ class MainActivity : AppCompatActivity() {
 
 
         }
+    }
+
+    // navigateUp:
+    // If we came here from within the app, pop the back stack
+    // If we came here from another app, return to it.
+    override fun onSupportNavigateUp(): Boolean {
+        return navController.navigateUp(appBarConfiguration)
+                || super.onSupportNavigateUp()
     }
 }

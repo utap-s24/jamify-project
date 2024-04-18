@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+<!--   changed naming scheme to distinguish with menu items-->
     <item
-        android:id="@+id/homeFragment"
+        android:id="@+id/home_fragment"
         android:title="Home"
         android:icon="@drawable/home"/>
-    <item android:id="@+id/createFragment"
+    <item android:id="@+id/create_fragment"
         android:title="Create"
         android:icon="@drawable/round_add_box_24"/>
     <item
-        android:id="@+id/profileFragment"
+        android:id="@+id/profile_fragment"
         android:title="Profile"
         android:icon="@drawable/baseline_person_24"/>
 
