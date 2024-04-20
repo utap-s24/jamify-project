@@ -91,7 +91,7 @@ class MainViewModel : ViewModel() {
             ownerName = currentAuthUser.name,
             ownerUid = currentAuthUser.uid,
             photoUuid = pictureUUID,
-            songName = "",
+            songTitle = "",
             caption = text
             // database sets firestoreID
         )

@@ -11,7 +11,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
+import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.manager.Lifecycle
+import com.example.jamify.databinding.FragmentProfileBinding
+
 
 
 class ProfileFragment : Fragment() {
@@ -20,10 +24,19 @@ class ProfileFragment : Fragment() {
         fun newInstance() = ProfileFragment()
     }
 
-    private val viewModel: ProfileViewModel by viewModels()
+    //variables
+    private val binding: FragmentProfileBinding? = null
+    private val viewModel: MainViewModel by activityViewModels()
+    private val profileViewModel: ProfileViewModel by viewModels()
+
+    //posts
+    private lateinit var adapter: RVDiffAdapter
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+
 
 
     }
@@ -31,7 +44,7 @@ class ProfileFragment : Fragment() {
         requireActivity().addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                 // Clear menu because we don't want settings icon
-                menu.
+//                menu.
             }
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 // Do nothing
