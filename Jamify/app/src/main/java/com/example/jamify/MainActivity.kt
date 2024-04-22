@@ -8,6 +8,7 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -35,6 +36,14 @@ class MainActivity : AppCompatActivity() {
     private val viewModel: MainViewModel by viewModels()
     companion object {
         const val TAG = "MainActivity"
+    }
+
+    // An Android nightmare
+    // https://stackoverflow.com/questions/1109022/close-hide-the-android-soft-keyboard
+    // https://stackoverflow.com/questions/7789514/how-to-get-activitys-windowtoken-without-view
+    fun hideKeyboard() {
+        val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(window.decorView.rootView.windowToken, 0)
     }
 
     fun progressBarOn() {
@@ -101,6 +110,12 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, LogInActivity::class.java)
             startActivity(intent)
             finish()
+        }
+
+
+        binding.root.setOnTouchListener { _, event ->
+            hideKeyboard()
+            false
         }
 
     }

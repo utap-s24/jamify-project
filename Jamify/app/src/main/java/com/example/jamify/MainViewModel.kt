@@ -38,6 +38,13 @@ class MainViewModel : ViewModel() {
     private val dbHelp = ViewModelDBHelper()
 
 
+
+    // create post data
+    private var imageUpload = MutableLiveData<String>()
+    private var caption = MutableLiveData<String>()
+    private var songName = MutableLiveData<String>()
+
+
     /////////////////////////////////////////////////////////////
     // Notes adapter.  With navigation, fragments are all
     // recycled aggressively, so state must live in viewModel
@@ -153,4 +160,12 @@ class MainViewModel : ViewModel() {
         Glide.fetch(storage.uuid2StorageReference(pictureUUID),
             imageView)
     }
+
+    /////////////////////////////////////////////////////////////
+    // Create Post Data
+
+
+
+
+
 }
