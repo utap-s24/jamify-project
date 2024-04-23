@@ -14,10 +14,10 @@ import com.spotify.android.appremote.api.ConnectionParams
 import com.spotify.android.appremote.api.Connector
 import com.spotify.android.appremote.api.SpotifyAppRemote
 import com.spotify.protocol.types.Track
-import com.spotify.sdk.android.auth.AccountsQueryParameters.CLIENT_ID
-import com.spotify.sdk.android.auth.AuthorizationClient
-import com.spotify.sdk.android.auth.AuthorizationRequest
-import com.spotify.sdk.android.auth.AuthorizationResponse
+//import com.spotify.sdk.android.auth.AccountsQueryParameters.CLIENT_ID
+//import com.spotify.sdk.android.auth.AuthorizationClient
+//import com.spotify.sdk.android.auth.AuthorizationRequest
+//import com.spotify.sdk.android.auth.AuthorizationResponse
 
 /**
  * A fragment representing a list of Items.
