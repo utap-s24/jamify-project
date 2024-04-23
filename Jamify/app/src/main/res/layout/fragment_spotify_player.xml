@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".SpotifyPlayer"
+    android:orientation="vertical"
+    android:layout_margin="8dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!--Write me-->
+
+
+        <!-- Player buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+
+            android:layout_margin="8dp"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/playerSkipBackButton"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginEnd="20dp"
+                />
+            <ImageButton
+                android:id="@+id/playerPlayPauseButton"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginEnd="20dp"
+                />
+            <ImageButton
+                android:id="@+id/playerSkipForwardButton"
+                android:layout_width="50dp"
+                android:layout_height="50dp" />
+        </LinearLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+
+            <TextView
+                android:id="@+id/loopIndicator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="36sp"
+                android:text="L"
+                android:layout_weight="1"
+                android:textColor="@color/black"
+                android:layout_alignParentLeft="true"
+                />
+            <ImageButton
+                android:id="@+id/playerPermuteButton"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignParentRight="true"/>
+
+        </RelativeLayout>
+
+        <!-- time remaining seek bar -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingTop="8dp"
+
+            >
+
+            <TextView
+                android:id="@+id/playerTimePassedText"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:text="BAD"
+                />
+            <android.widget.SeekBar
+                android:id="@+id/playerSeekBar"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                >
+            </android.widget.SeekBar>
+
+            <TextView
+                android:id="@+id/playerTimeRemainingText"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+
+                android:text="BAD"
+                />
+        </LinearLayout>
+
+
+</androidx.appcompat.widget.LinearLayoutCompat>

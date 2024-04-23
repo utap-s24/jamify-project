@@ -18,7 +18,6 @@ android {
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -81,4 +80,8 @@ dependencies {
     implementation ("com.github.bumptech.glide:glide:4.16.0")
     kapt ("com.github.bumptech.glide:compiler:4.16.0")
     annotationProcessor ("com.github.bumptech.glide:compiler:4.16.0")
+
+    implementation ("com.google.code.gson:gson:2.10.1")
+    implementation (files("../libs/spotify-auth-release-2.1.0.aar"))
+    implementation (files("../libs/spotify-app-remote-release-0.8.0.aar"))
 }

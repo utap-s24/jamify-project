@@ -45,6 +45,20 @@ class MainViewModel : ViewModel() {
     private var songName = MutableLiveData<String>()
 
 
+    // spotify authentication
+    private var spotifyToken = MutableLiveData<String>()
+
+
+
+    fun setSpotifyToken(token: String) {
+        spotifyToken.value = token
+    }
+
+
+    fun observeSpotifyToken(): LiveData<String> {
+        return spotifyToken
+    }
+
     /////////////////////////////////////////////////////////////
     // Notes adapter.  With navigation, fragments are all
     // recycled aggressively, so state must live in viewModel
