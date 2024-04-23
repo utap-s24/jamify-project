@@ -84,6 +84,11 @@ dependencies {
     kapt ("com.github.bumptech.glide:compiler:4.16.0")
     annotationProcessor ("com.github.bumptech.glide:compiler:4.16.0")
 
-    implementation ("com.google.code.gson:gson:2.10.1")
+    //spotify API set up
+
     implementation (files("../libs/spotify-app-remote-release-0.8.0.aar"))
+
+//    implementation("com.example.jamify:spotify-app-remote-release-0.8.0")
+    implementation ("com.google.code.gson:gson:2.10.1")
+
 }
