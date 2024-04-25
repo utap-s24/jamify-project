@@ -17,9 +17,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.viewModels
+import com.example.jamify.com.example.jamify.APIInterface
 import com.example.jamify.databinding.FragmentCreateBinding
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 /**
  * A fragment representing a list of Items.
@@ -62,7 +69,28 @@ class CreateFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d(javaClass.simpleName, "onViewCreated")
+        val retrofitBuilder = Retrofit.Builder()
+            .baseUrl("https://deezerdevs-deezer.p.rapidapi.com")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(APIInterface::class.java)
 
+        val retrofitData = retrofitBuilder.getData("eminem")
+
+        retrofitData.enqueue(object : Callback<MyData?> {
+            override fun onResponse(call: Call<MyData?>, response: Response<MyData?>) {
+                val responseBody = response.body()?.data
+                val textView = binding.response
+                textView.text = responseBody.toString()
+                Log.d("TAG: onResponse", "onResponse: "  + responseBody.toString())
+
+            }
+
+            override fun onFailure(call: Call<MyData?>, t: Throwable) {
+                // if api call is failure then this method is executed
+                Log.e("MainActivity", "onFailure: " + t.message)
+            }
+        })
         binding.image.setOnClickListener {
             openFileChooser()
         }

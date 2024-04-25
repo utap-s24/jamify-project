@@ -24,7 +24,13 @@ tools:context=".CreateFragment">
 
         ></EditText>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/searchText"
 
+        android:id="@+id/response"
+        ></TextView>
     <ImageButton
         android:layout_width="wrap_content"
         android:id="@+id/search"
