@@ -1,26 +1,17 @@
 package com.example.jamify
 
 import android.app.Activity
-import android.content.Context
-import android.content.Context.INPUT_METHOD_SERVICE
 import android.content.Intent
 import android.os.Bundle
-import android.provider.MediaStore
 import android.util.Log
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
-import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.jamify.com.example.jamify.APIInterface
+import com.example.jamify.com.example.jamify.DataAdapter
 import com.example.jamify.databinding.FragmentCreateBinding
 import retrofit2.Call
 import retrofit2.Callback
@@ -42,6 +33,9 @@ class CreateFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val PICK_IMAGE_REQUEST = 1
+
+    lateinit var recyclerView: RecyclerView
+    lateinit var myAdapter: DataAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,6 +63,8 @@ class CreateFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d(javaClass.simpleName, "onViewCreated")
+
+        recyclerView = binding.recyclerView
         val retrofitBuilder = Retrofit.Builder()
             .baseUrl("https://deezerdevs-deezer.p.rapidapi.com")
             .addConverterFactory(GsonConverterFactory.create())
@@ -79,9 +75,12 @@ class CreateFragment : Fragment() {
 
         retrofitData.enqueue(object : Callback<MyData?> {
             override fun onResponse(call: Call<MyData?>, response: Response<MyData?>) {
-                val responseBody = response.body()?.data
-                val textView = binding.response
-                textView.text = responseBody.toString()
+                val responseBody = response.body()?.data!!
+                myAdapter = DataAdapter(activity!!, responseBody)
+                recyclerView.adapter = myAdapter
+                recyclerView.layoutManager = LinearLayoutManager(context)
+//                val textView = binding.response
+//                textView.text = responseBody.toString()
                 Log.d("TAG: onResponse", "onResponse: "  + responseBody.toString())
 
             }
