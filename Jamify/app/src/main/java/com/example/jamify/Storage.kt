@@ -2,6 +2,7 @@ package com.example.jamify
 
 import android.net.Uri
 import android.util.Log
+import androidx.core.net.toFile
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageMetadata
 import com.google.firebase.storage.StorageReference
@@ -21,31 +22,32 @@ class Storage {
             Log.d(javaClass.simpleName, "Upload FAILED $uuid, file delete FAILED")
         }
     }
-    fun uploadImage(localFile: File, uuid: String, uploadSuccess:()->Unit) {
+//    deleted from below : , uploadSuccess:()->Unit
+    fun uploadImage(file: Uri) {
         //SSS
-        val file = Uri.fromFile(localFile)
-        val uuidRef = photoStorage.child(uuid)
+//        val file = Uri.fromFile(localFile)
+        val uuidRef = photoStorage.child(file.toString())
         val metadata = StorageMetadata.Builder()
             .setContentType("image/jpg")
             .build()
         val uploadTask = uuidRef.putFile(file, metadata)
         //EEE // XXX Write me
-
+        val localFile = file.toFile()
         // Register observers to listen for when the download is done or if it fails
         uploadTask
             .addOnFailureListener {
                 // Handle unsuccessful uploads
-                deleteFile(localFile, uuid)
+                deleteFile(localFile, file.toString())
             }
             .addOnSuccessListener {
                 // taskSnapshot.metadata contains file metadata such as size, content-type, etc.
-                uploadSuccess()
-                deleteFile(localFile, uuid)
+//                uploadSuccess()
+                deleteFile(localFile, file.toString())
             }
     }
-    fun deleteImage(pictureUUID: String) {
+    fun deleteImage(pictureUUID: Uri) {
         // Delete the file
-        photoStorage.child(pictureUUID).delete()
+        photoStorage.child(pictureUUID.toString()).delete()
             .addOnSuccessListener {
                 Log.d(javaClass.simpleName, "Deleted $pictureUUID")
             }

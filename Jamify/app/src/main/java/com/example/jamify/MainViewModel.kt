@@ -1,5 +1,6 @@
 package com.example.jamify
 
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 
 import android.util.Log
@@ -40,10 +41,35 @@ class MainViewModel : ViewModel() {
 
 
     // create post data
-    private var imageUpload = MutableLiveData<String>()
+    var songId = MutableLiveData<Long>()
+    var selectedIndex = 0
+
+    private var searchedSongs = MutableLiveData<List<Data>>()
+
+    private var imageUpload = MutableLiveData<Uri>()
     private var caption = MutableLiveData<String>()
     private var songName = MutableLiveData<String>()
 
+
+    fun setSongId(id: Long) {
+        songId.value = id
+    }
+
+    fun setSearchedSongs(songs: List<Data>) {
+        searchedSongs.value = songs
+    }
+
+    fun getCopyOfSongInfo(): List<Data>? {
+        return searchedSongs.value
+    }
+
+    fun getSong(index: Int): Data {
+        return searchedSongs.value!![index]
+    }
+
+    fun setSelectedImage(image: Uri) {
+        imageUpload.value = image
+    }
 
     /////////////////////////////////////////////////////////////
     // Notes adapter.  With navigation, fragments are all
@@ -52,15 +78,15 @@ class MainViewModel : ViewModel() {
         val id = postList.value?.get(position)?.firestoreID ?: ""
         return expandedMap[id] == true
     }
-    fun isExpandable(position: Int) : Boolean {
-        return postList.value?.get(position)?.photoUuid?.isNotEmpty() ?: false
-    }
-    fun toggleExpanded(position: Int) {
-        if( isExpandable(position) ) {
-            val id = postList.value?.get(position)?.firestoreID ?: ""
-            expandedMap[id] = expandedMap[id] != true
-        }
-    }
+//    fun isExpandable(position: Int) : Boolean {
+//        return postList.value?.get(position)?.photoUuid?.isNotEmpty() ?: false
+//    }
+//    fun toggleExpanded(position: Int) {
+//        if( isExpandable(position) ) {
+//            val id = postList.value?.get(position)?.firestoreID ?: ""
+//            expandedMap[id] = expandedMap[id] != true
+//        }
+//    }
     // MainActivity gets updates on this via live data and informs view model
     fun setCurrentAuthUser(user: User) {
         currentAuthUser = user
@@ -93,12 +119,14 @@ class MainViewModel : ViewModel() {
 
         dbHelp.updateNote(post, postList)
     }
-    fun createNote(text: String, pictureUUID: String) {
+    fun createNote(text: String) {
         val post = PostMeta(
             ownerName = currentAuthUser.name,
             ownerUid = currentAuthUser.uid,
-            photoUuid = pictureUUID,
-            songTitle = "",
+            photoUuid = Uri.EMPTY,
+            songTitle = "song name",
+            songId= songId.value!!,
+            private = false,
             caption = text
             // database sets firestoreID
         )
@@ -140,14 +168,13 @@ class MainViewModel : ViewModel() {
     // You could imagine dealing with this somehow using local files while waiting for
     // a server interaction, but that seems error prone.
     // Freezing the app during an upload also seems bad.
-    fun pictureSuccess(finished: (String)->Unit) {
-        val photoFile = TakePictureWrapper.fileNameToFile(pictureUUID)
+    fun pictureSuccess() {
+//        val photoFile = TakePictureWrapper.fileNameToFile(imageUpload.value ?: "")
         //SSS
         // Upload, which deletes local file and finally our memory of its UUID
-        storage.uploadImage(photoFile, pictureUUID) {
-            finished(pictureUUID)
-            pictureUUID = ""
-        }
+
+        storage.uploadImage(imageUpload.value!!)
+
         //EEE // XXX Write me while preserving referential integrity
     }
     fun pictureFailure() {
@@ -156,8 +183,8 @@ class MainViewModel : ViewModel() {
         pictureUUID = ""
     }
 
-    fun glideFetch(pictureUUID: String, imageView: ImageView) {
-        Glide.fetch(storage.uuid2StorageReference(pictureUUID),
+    fun glideFetch(pictureUUID: Uri, imageView: ImageView) {
+        Glide.fetch(storage.uuid2StorageReference(pictureUUID.toString()),
             imageView)
     }
 

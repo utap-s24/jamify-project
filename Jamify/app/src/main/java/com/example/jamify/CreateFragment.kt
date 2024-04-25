@@ -2,6 +2,7 @@ package com.example.jamify
 
 import android.app.Activity
 import android.content.Intent
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -9,6 +10,8 @@ import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.viewModels
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.jamify.com.example.jamify.APIInterface
 import com.example.jamify.com.example.jamify.DataAdapter
@@ -26,6 +29,7 @@ class CreateFragment : Fragment() {
     companion object {
         fun newInstance() = CreateFragment()
     }
+    private val viewModel: MainViewModel by viewModels()
 
     // XXX initialize viewModel
     private var _binding: FragmentCreateBinding? = null
@@ -65,18 +69,84 @@ class CreateFragment : Fragment() {
         Log.d(javaClass.simpleName, "onViewCreated")
 
         recyclerView = binding.recyclerView
+        myAdapter = DataAdapter(requireActivity(), viewModel, ::onClickListener)
+
+
+        // populate adapter with list of songs
+//        val retrofitBuilder = Retrofit.Builder()
+//            .baseUrl("https://deezerdevs-deezer.p.rapidapi.com")
+//            .addConverterFactory(GsonConverterFactory.create())
+//            .build()
+//            .create(APIInterface::class.java)
+//
+//        val retrofitData = retrofitBuilder.getData("eminem")
+//
+//        retrofitData.enqueue(object : Callback<MyData?> {
+//            override fun onResponse(call: Call<MyData?>, response: Response<MyData?>) {
+//                val responseBody = response.body()?.data!!
+//                myAdapter = DataAdapter(activity!!, responseBody)
+//                recyclerView.adapter = myAdapter
+//                recyclerView.layoutManager = LinearLayoutManager(context)
+////                val textView = binding.response
+////                textView.text = responseBody.toString()
+//                Log.d("TAG: onResponse", "onResponse: "  + responseBody.toString())
+//
+//            }
+//
+//            override fun onFailure(call: Call<MyData?>, t: Throwable) {
+//                // if api call is failure then this method is executed
+//                Log.e("MainActivity", "onFailure: " + t.message)
+//            }
+//        })
+        binding.image.setOnClickListener {
+            openFileChooser()
+        }
+
+
+        binding.search.setOnClickListener {
+            val searchTerm = binding.searchText.text.toString()
+            if (searchTerm.isNotEmpty()) {
+                Log.e("MainActivity", searchTerm)
+                searchSong(searchTerm)
+            }
+        }
+
+        // on pressing create, will upload image to firebase storage and will create firebase doc
+
+        binding.create.setOnClickListener {
+            if (viewModel.songId != null) {
+//                if (binding.image.drawable != null) {
+//                    // upload image to firebase storage
+//                    // create firebase doc
+//                    viewModel.pictureSuccess()
+//                }
+                viewModel.createNote(binding.captionText.text.toString())
+
+            }
+            // otherwise, show popup to prompt user to select a song
+        }
+
+
+
+
+    }
+
+
+    fun searchSong(searchTerm: String) {
         val retrofitBuilder = Retrofit.Builder()
             .baseUrl("https://deezerdevs-deezer.p.rapidapi.com")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(APIInterface::class.java)
 
-        val retrofitData = retrofitBuilder.getData("eminem")
+        val retrofitData = retrofitBuilder.getData(searchTerm)
 
         retrofitData.enqueue(object : Callback<MyData?> {
             override fun onResponse(call: Call<MyData?>, response: Response<MyData?>) {
                 val responseBody = response.body()?.data!!
-                myAdapter = DataAdapter(activity!!, responseBody)
+                viewModel.setSearchedSongs(responseBody)
+                myAdapter.submitList(viewModel.getCopyOfSongInfo())
+
                 recyclerView.adapter = myAdapter
                 recyclerView.layoutManager = LinearLayoutManager(context)
 //                val textView = binding.response
@@ -90,20 +160,19 @@ class CreateFragment : Fragment() {
                 Log.e("MainActivity", "onFailure: " + t.message)
             }
         })
-        binding.image.setOnClickListener {
-            openFileChooser()
-        }
-
-
-
-
+    }
+    fun onClickListener(index: Int) : Unit {
+        viewModel.selectedIndex = index
+        viewModel.setSongId(viewModel.getSong(index).id)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null && data.data != null) {
             val imageUri = data.data
+
             binding.image.setImageURI(imageUri)
+            viewModel.setSelectedImage(imageUri!!)
         }
     }
 }
