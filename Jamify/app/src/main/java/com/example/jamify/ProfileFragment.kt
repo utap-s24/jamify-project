@@ -85,6 +85,10 @@ class ProfileFragment : Fragment() {
             if (currentUser != null) {
                 firebaseAuth.signOut()
                 //after successful sign up end this activity
+
+                    //nav to Log in
+
+
             }
         }
     }

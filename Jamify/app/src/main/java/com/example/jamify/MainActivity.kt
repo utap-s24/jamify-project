@@ -136,9 +136,9 @@ class MainActivity : AppCompatActivity() {
         super.onStart()
         Log.d(TAG, "onStart")
         // Create authentication object.  This will log the user in if needed
-        authUser = AuthUser(activityResultRegistry)
-        // authUser needs to observe our lifecycle so it can run login activity
-        lifecycle.addObserver(authUser)
+//        authUser = AuthUser(activityResultRegistry)
+//        // authUser needs to observe our lifecycle so it can run login activity
+//        lifecycle.addObserver(authUser)
 
 
         //oki lets see if we set up own sign up properly
@@ -153,14 +153,7 @@ class MainActivity : AppCompatActivity() {
 ////            navigateToSignUpScreen()
 //        }
 
-//        authUser.observeUser().observe(this) { user->
-//            // XXX Write me, user status has changed
-//            viewModel.setCurrentAuthUser(user)
-////            progressBarOn()
-////            viewModel.fetchPhotoMeta {
-////                progressBarOff()
-////            }
-//
+
 //
 //        }
     }

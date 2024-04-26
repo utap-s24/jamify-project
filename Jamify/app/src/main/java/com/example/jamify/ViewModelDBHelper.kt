@@ -8,7 +8,7 @@ import com.google.firebase.firestore.Query
 
 class ViewModelDBHelper() {
     private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
-    private val collectionRoot = "allNotes"
+    private val collectionRoot = "posts"
 
     private fun elipsizeString(string: String) : String {
         if(string.length < 10)
@@ -35,7 +35,7 @@ class ViewModelDBHelper() {
             .limit(100)
             .get()
             .addOnSuccessListener { result ->
-                Log.d(javaClass.simpleName, "allNotes fetch ${result!!.documents.size}")
+                Log.d(javaClass.simpleName, "posts fetch ${result!!.documents.size}")
                 // NB: This is done on a background thread
                 notesList.postValue(result.documents.mapNotNull {
                     it.toObject(PostMeta::class.java)
@@ -43,7 +43,7 @@ class ViewModelDBHelper() {
                 callback()
             }
             .addOnFailureListener {
-                Log.d(javaClass.simpleName, "allNotes fetch FAILED ", it)
+                Log.d(javaClass.simpleName, "posts fetch FAILED ", it)
                 callback()
             }
     }
