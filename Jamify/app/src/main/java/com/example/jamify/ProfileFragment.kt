@@ -73,9 +73,11 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d(javaClass.simpleName, "onViewCreated")
+
+
         // XXX Write me.
 
-
+        binding.usernameTextView.text = firebaseAuth.currentUser?.displayName
 //        binding.recyclerView.layoutManager = LinearLayoutManager(context)
 //        binding.recyclerView.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
 //        initSwipeLayout(binding.swipeRefreshLayout)

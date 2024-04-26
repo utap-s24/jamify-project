@@ -1,5 +1,6 @@
 package com.example.jamify
 
+import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 
@@ -13,8 +14,10 @@ import com.example.jamify.model.PostMeta
 import com.example.jamify.view.TakePictureWrapper
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import kotlinx.coroutines.currentCoroutineContext
+import java.io.File
 
-class MainViewModel : ViewModel() {
+class MainViewModel  : ViewModel() {
     // Remember the uuid, and hence file name of file camera will create
     private var pictureUUID = ""
     // Only call this from TakePictureWrapper
@@ -51,6 +54,7 @@ class MainViewModel : ViewModel() {
     private var searchedSongs = MutableLiveData<List<Data>>()
 
     private var imageUpload = MutableLiveData<Uri>()
+    private var imageFile = MutableLiveData<File>()
     private var caption = MutableLiveData<String>()
 
 
@@ -129,14 +133,27 @@ class MainViewModel : ViewModel() {
 
         dbHelp.updateNote(post, postList)
     }
+
+    fun setImageFile(file: File) {
+        imageFile.value = file
+    }
+
+    fun getImageFile() : File {
+        return imageFile.value!!
+    }
+
+    fun getImageURI(): Uri {
+        return imageUpload.value!!
+    }
     fun createNote(text: String) {
         Log.d(javaClass.simpleName, "currentAuthUser.name ${auth.currentUser?.displayName}")
         Log.d(javaClass.simpleName, "currentAuthUser.uid ${auth.currentUser?.uid}")
         Log.d(javaClass.simpleName, "song ID ${songId.value}")
-        val post = PostMeta(
-            ownerName = auth.currentUser?.displayName!!,
-            ownerUid = auth.currentUser?.uid!!,
-            photoUuid = Uri.EMPTY,
+        val post=
+            PostMeta(
+                ownerName = auth.currentUser?.displayName!!,
+                ownerUid = auth.currentUser?.uid!!,
+                photoUuid = imageFile.value?.name!!,
             songTitle = "song name",
             songId= songId.value!!,
             private = false,
@@ -186,7 +203,10 @@ class MainViewModel : ViewModel() {
         //SSS
         // Upload, which deletes local file and finally our memory of its UUID
 
-        storage.uploadImage(imageUpload.value!!)
+        storage.uploadImage(imageUpload.value!!, imageFile.value!!) {
+            imageUpload.value = Uri.EMPTY
+            imageFile.value = File("")
+        }
 
         //EEE // XXX Write me while preserving referential integrity
     }
@@ -196,8 +216,8 @@ class MainViewModel : ViewModel() {
         pictureUUID = ""
     }
 
-    fun glideFetch(pictureUUID: Uri, imageView: ImageView) {
-        Glide.fetch(storage.uuid2StorageReference(pictureUUID.toString()),
+    fun glideFetch(pictureUUID: String, imageView: ImageView) {
+        Glide.fetch(storage.uuid2StorageReference(pictureUUID),
             imageView)
     }
 

@@ -12,7 +12,7 @@ data class PostMeta(
     var ownerUid: String = "",
     val postId: String = "",        //ik we have photouuid for storage, should we
                                     //use a id for the post meta too?
-    var photoUuid : Uri= Uri.EMPTY,
+    var photoUuid : String = "",
     var songTitle : String = "",
     var byteSize : Long = 0L,
     var caption: String = "",

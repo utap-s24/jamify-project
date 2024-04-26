@@ -7,13 +7,18 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageMetadata
 import com.google.firebase.storage.StorageReference
 import java.io.File
+import android.content.ContentResolver
+import android.content.Context
+import java.util.UUID
 
 // Store files in firebase storage
 //By: Emmett Witchel
-class Storage {
+class Storage () {
     // Create a storage reference from our app
     private val photoStorage: StorageReference =
         FirebaseStorage.getInstance().reference.child("images")
+
+
 
     private fun deleteFile(localFile: File, uuid: String) {
         if(localFile.delete()) {
@@ -23,16 +28,17 @@ class Storage {
         }
     }
 //    deleted from below : , uploadSuccess:()->Unit
-    fun uploadImage(file: Uri) {
+    fun uploadImage(fileUri: Uri, file: File, uploadSuccess:()->Unit) {
         //SSS
-//        val file = Uri.fromFile(localFile)
-        val uuidRef = photoStorage.child(file.toString())
+
+        val uuidRef = photoStorage.child(file.name)
+
         val metadata = StorageMetadata.Builder()
             .setContentType("image/jpg")
             .build()
-        val uploadTask = uuidRef.putFile(file, metadata)
+        val uploadTask = uuidRef.putFile(fileUri, metadata)
         //EEE // XXX Write me
-        val localFile = file.toFile()
+        val localFile = file
         // Register observers to listen for when the download is done or if it fails
         uploadTask
             .addOnFailureListener {
@@ -41,13 +47,13 @@ class Storage {
             }
             .addOnSuccessListener {
                 // taskSnapshot.metadata contains file metadata such as size, content-type, etc.
-//                uploadSuccess()
+                uploadSuccess()
                 deleteFile(localFile, file.toString())
             }
     }
-    fun deleteImage(pictureUUID: Uri) {
+    fun deleteImage(pictureUUID: String) {
         // Delete the file
-        photoStorage.child(pictureUUID.toString()).delete()
+        photoStorage.child(pictureUUID).delete()
             .addOnSuccessListener {
                 Log.d(javaClass.simpleName, "Deleted $pictureUUID")
             }
@@ -69,6 +75,7 @@ class Storage {
                 Log.d(javaClass.simpleName, "listAllImages FAILED")
             }
     }
+
     fun uuid2StorageReference(pictureUUID: String): StorageReference {
         return photoStorage.child(pictureUUID)
     }

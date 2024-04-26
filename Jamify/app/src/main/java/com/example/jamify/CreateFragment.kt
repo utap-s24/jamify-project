@@ -1,9 +1,12 @@
 package com.example.jamify
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.media.MediaPlayer
+import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
@@ -16,12 +19,20 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.jamify.com.example.jamify.APIInterface
 import com.example.jamify.com.example.jamify.DataAdapter
 import com.example.jamify.databinding.FragmentCreateBinding
+import com.google.common.io.Files.getFileExtension
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
+import java.io.InputStream
 import java.lang.Long
+import android.provider.OpenableColumns
+import java.net.URI
+import java.util.UUID
 
 /**
  * A fragment representing a list of Items.
@@ -116,14 +127,22 @@ class CreateFragment : Fragment() {
 
         binding.create.setOnClickListener {
             if (viewModel.songName.value != "") {
+                if (viewModel.getImageFile().isFile()){
+                    // upload image to firebase storage
+                    // create firebase doc
+
+
+
 //                if (binding.image.drawable != null) {
 //                    // upload image to firebase storage
 //                    // create firebase doc
-//                    viewModel.pictureSuccess()
+                    viewModel.pictureSuccess()
 //                }
-                Log.d("CreateFragment", viewModel.getCurrentAuthUser().toString())
-                viewModel.createNote(binding.captionText.text.toString())
+                    Log.d("CreateFragment", viewModel.getCurrentAuthUser().toString())
 
+                    // TODO: update view model list of posts in feed and private view
+                    viewModel.createNote(binding.captionText.text.toString())
+                }
             }
             // otherwise, show popup to prompt user to select a song
         }
@@ -173,10 +192,55 @@ class CreateFragment : Fragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null && data.data != null) {
-            val imageUri = data.data
-
-            binding.image.setImageURI(imageUri)
-            viewModel.setSelectedImage(imageUri!!)
+            val uri = data?.data // Get the URI of the selected file
+            val file = getFileFromUri(requireContext(), uri!!)
+            if (file != null) {
+                viewModel.setImageFile(file)
+            }
+            binding.image.setImageURI(uri)
+            viewModel.setSelectedImage(uri!!)
         }
+    }
+
+
+
+private fun getFileName(): String? {
+//    var result: String? = null
+//    val cursor = context?.contentResolver?.query(uri, null, null, null, null)
+//        cursor?.use {
+//        if (cursor.moveToFirst()) {
+//            val nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+//            result = cursor.getString(nameIndex)
+//        }
+//    }
+//    private fun generateFileName(): String {
+//        return UUID.randomUUID().toString()
+
+    return UUID.randomUUID().toString()
+}
+
+    fun getFileFromUri(context: Context, uri: Uri): File? {
+        var inputStream: InputStream? = null
+        var file: File? = null
+        try {
+            inputStream = context.contentResolver.openInputStream(uri)
+            val fileName = getFileName()
+            val fileExtension = getFileExtension(uri)
+            val storageDir = context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
+            file = File.createTempFile(fileName, "${fileName}.jpg", storageDir)
+            val outputStream = FileOutputStream(file)
+            inputStream?.copyTo(outputStream)
+            outputStream.close()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        } finally {
+            inputStream?.close()
+        }
+        return file
+    }
+
+    fun getFileExtension(uri: Uri) : String {
+        val mimeType  = context?.contentResolver?.getType(uri)
+        return mimeType?.substringAfter("/") ?: ""
     }
 }
