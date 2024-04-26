@@ -21,6 +21,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.lang.Long
 
 /**
  * A fragment representing a list of Items.
@@ -114,12 +115,13 @@ class CreateFragment : Fragment() {
         // on pressing create, will upload image to firebase storage and will create firebase doc
 
         binding.create.setOnClickListener {
-            if (viewModel.songId != null) {
+            if (viewModel.songName.value != "") {
 //                if (binding.image.drawable != null) {
 //                    // upload image to firebase storage
 //                    // create firebase doc
 //                    viewModel.pictureSuccess()
 //                }
+                Log.d("CreateFragment", viewModel.getCurrentAuthUser().toString())
                 viewModel.createNote(binding.captionText.text.toString())
 
             }
@@ -162,7 +164,9 @@ class CreateFragment : Fragment() {
         })
     }
     fun onClickListener(index: Int) : Unit {
+        Log.d("CreateFragment", "onClickListener")
         viewModel.selectedIndex = index
+        viewModel.songName.value = viewModel.getSong(index).title
         viewModel.setSongId(viewModel.getSong(index).id)
     }
 

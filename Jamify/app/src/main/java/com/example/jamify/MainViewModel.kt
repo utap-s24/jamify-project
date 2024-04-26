@@ -11,6 +11,8 @@ import androidx.lifecycle.MutableLiveData
 import com.example.jamify.glide.Glide
 import com.example.jamify.model.PostMeta
 import com.example.jamify.view.TakePictureWrapper
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 
 class MainViewModel : ViewModel() {
     // Remember the uuid, and hence file name of file camera will create
@@ -31,7 +33,7 @@ class MainViewModel : ViewModel() {
     private var allImages = MutableLiveData<List<String>>()
 
     // Track current authenticated user
-    private var currentAuthUser = invalidUser
+    private var auth =  FirebaseAuth.getInstance()
 
     // Firestore state
     private val storage = Storage()
@@ -42,16 +44,18 @@ class MainViewModel : ViewModel() {
 
     // create post data
     var songId = MutableLiveData<Long>()
+    var songName = MutableLiveData<String>()
+
     var selectedIndex = 0
 
     private var searchedSongs = MutableLiveData<List<Data>>()
 
     private var imageUpload = MutableLiveData<Uri>()
     private var caption = MutableLiveData<String>()
-    private var songName = MutableLiveData<String>()
 
 
     fun setSongId(id: Long) {
+        Log.d(javaClass.simpleName, "setSongId $id")
         songId.value = id
     }
 
@@ -88,8 +92,14 @@ class MainViewModel : ViewModel() {
 //        }
 //    }
     // MainActivity gets updates on this via live data and informs view model
-    fun setCurrentAuthUser(user: User) {
-        currentAuthUser = user
+//    fun setCurrentAuthUser(user: User) {
+//      Log.d(javaClass.simpleName, "auth user being updated in view model")
+//    Log.d(javaClass.simpleName, user.uid)
+//
+//        currentAuthUser = user
+//    }
+    fun getCurrentAuthUser(): FirebaseUser? {
+        return auth.currentUser
     }
 
     /////////////////////////////////////////////////////////////
@@ -120,9 +130,12 @@ class MainViewModel : ViewModel() {
         dbHelp.updateNote(post, postList)
     }
     fun createNote(text: String) {
+        Log.d(javaClass.simpleName, "currentAuthUser.name ${auth.currentUser?.displayName}")
+        Log.d(javaClass.simpleName, "currentAuthUser.uid ${auth.currentUser?.uid}")
+        Log.d(javaClass.simpleName, "song ID ${songId.value}")
         val post = PostMeta(
-            ownerName = currentAuthUser.name,
-            ownerUid = currentAuthUser.uid,
+            ownerName = auth.currentUser?.displayName!!,
+            ownerUid = auth.currentUser?.uid!!,
             photoUuid = Uri.EMPTY,
             songTitle = "song name",
             songId= songId.value!!,

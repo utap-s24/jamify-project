@@ -64,6 +64,8 @@ class AuthUser(private val registry: ActivityResultRegistry) :
         } else {
             val user = User(firebaseUser.displayName,
                 firebaseUser.email, firebaseUser.uid)
+            Log.d(TAG, user.uid)
+
             liveUser.postValue(user)
         }
     }
@@ -81,8 +83,9 @@ class AuthUser(private val registry: ActivityResultRegistry) :
         Log.d(TAG, "onAuthStateChanged null? ${p0.currentUser == null}")
         // XXX Write me
         postUserUpdate(p0.currentUser)
+
     }
-    private fun user(): FirebaseUser? {
+    fun user(): FirebaseUser? {
         return Firebase.auth.currentUser
     }
     private fun login() {

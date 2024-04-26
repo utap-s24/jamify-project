@@ -3,6 +3,7 @@ package com.example.jamify.com.example.jamify
 import android.app.Activity
 import android.graphics.Color
 import android.media.MediaPlayer
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.net.toUri
@@ -44,7 +45,11 @@ class DataAdapter(val context: Activity,
                 // TODO: not sure about this either
                 var prevSongSelected = viewModel.selectedIndex
 //                viewModel.selectedIndex = bindingAdapterPosition
-                clickListener(bindingAdapterPosition)
+                viewModel.selectedIndex = bindingAdapterPosition
+                viewModel.songName.value = viewModel.getSong(bindingAdapterPosition).title
+                Log.d("DataAdapter", "Song name: ${viewModel.getSong(bindingAdapterPosition).id}")
+                viewModel.setSongId(viewModel.getSong(bindingAdapterPosition).id)
+//                clickListener(bindingAdapterPosition)
                 notifyItemChanged(prevSongSelected)
                 notifyItemChanged(bindingAdapterPosition)
 
