@@ -61,7 +61,7 @@ class ProfileFragment : Fragment() {
 
 //    private fun initAdapter(binding: FragmentRvBinding) {
     private fun initAdapter(binding: FragmentProfileBinding) {
-        val postRowAdapter = RVDiffAdapter(viewModel){}
+        val postRowAdapter = PostRowAdapter(requireActivity(), viewModel)
         binding.postsRecyclerView.adapter = postRowAdapter
         // XXX Write me, observe posts
         viewModel.observeFilteredUserPosts().observe(viewLifecycleOwner) {
@@ -92,7 +92,7 @@ class ProfileFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        viewModel.fetchInitialNotes(){}
+        viewModel.fetchInitialPosts(){}
         viewModel.observeUserPosts().observe(viewLifecycleOwner) { userPosts ->
             // Extract unique song titles from user's posts
             val songTitles = viewModel.extractSongTitles().toMutableList()

@@ -96,7 +96,7 @@ class MainViewModel  : ViewModel() {
 
         sortInfo.value = SortInfo(ascending)
         // Fetch the sorted note list from the database
-        fetchInitialNotes(resultListener)
+        fetchInitialPosts(resultListener)
     }
 
 
@@ -245,10 +245,11 @@ class MainViewModel  : ViewModel() {
 
     /////////////////////////////////////////////////////////////
     // Notes, memory cache and database interaction
-    fun fetchInitialNotes(callback: ()->Unit) {
+    fun fetchInitialPosts(callback: ()->Unit) {
         dbHelp.fetchInitialNotes(postList, sortInfo.value!!, callback)
 
-      
+    }
+
     fun observePublicPosts(): LiveData<List<PostMeta>> {
         Log.d(javaClass.simpleName, "observePublicPosts " + publicPosts.value)
         return publicPosts
@@ -275,7 +276,6 @@ class MainViewModel  : ViewModel() {
             songTitles.add(post.songTitle)
         }
 
-
         return songTitles
     }
 
@@ -292,7 +292,7 @@ class MainViewModel  : ViewModel() {
     }
     fun observeFilteredUserPosts(): LiveData<List<PostMeta>> {
         return filteredUserPosts
-
+    }
     fun setPrivacy(private: Boolean) {
         // XXX Write me
         postPrivacy.value = private
@@ -357,7 +357,6 @@ class MainViewModel  : ViewModel() {
             // database sets firestoreID
         )
         dbHelp.createNote(post,postList, sortInfo.value!!)
-            )
     }
     fun removePostAt(position: Int) {
         //SSS
