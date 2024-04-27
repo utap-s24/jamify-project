@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.jamify.databinding.PostRowBinding
 import com.example.jamify.model.PostMeta
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.runBlocking
 
 /**
@@ -41,13 +42,17 @@ class PostRowAdapter(private val viewModel: MainViewModel)
 
         fun bind(holder: VH, position: Int) {
             Log.d(javaClass.simpleName, "In post row adapter")
-            if (viewModel.getPublicPostsSize() != 0) {
+            if (viewModel.getPublicPostsSize() != 0)
+            {
+                var auth =  FirebaseAuth.getInstance()
+
                 val postInfo = getItem(position)
                 runBlocking {
                     viewModel.retrieveSongInfo(postInfo.songId)
                     rowBinding.songAuthor.text = viewModel.loadedSongInfo?.value?.artist?.name
                     rowBinding.songTitle.text = viewModel.loadedSongInfo?.value?.title
-
+                    rowBinding.postUsernameTextView.text = auth.currentUser?.displayName
+                    rowBinding.postCaption.text = postInfo.caption
                 }
 
 

@@ -93,13 +93,6 @@ class HomeFragment : Fragment() {
            postRowAdapter.submitList(it)
         }
 
-        viewModel.observePostsEmpty().observe(viewLifecycleOwner) {
-            if (it) {
-                binding.emptyView.visibility = View.VISIBLE
-            } else {
-                binding.emptyView.visibility = View.GONE
-            }
-        }
 
 
     }
