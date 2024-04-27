@@ -11,6 +11,7 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.jamify.glide.Glide
+import com.example.jamify.glide.GlideApp
 import com.example.jamify.model.PostMeta
 import com.example.jamify.view.TakePictureWrapper
 import com.google.firebase.auth.FirebaseAuth
@@ -112,6 +113,9 @@ class MainViewModel  : ViewModel() {
 
     private var searchedSongs = MutableLiveData<List<Data>>()
 
+    private var profileImageUpload = MutableLiveData<Uri>()
+    private var profileImageFile = MutableLiveData<File>()
+
     private var imageUpload = MutableLiveData<Uri>()
     private var imageFile = MutableLiveData<File>()
     private var caption = MutableLiveData<String>()
@@ -137,6 +141,12 @@ class MainViewModel  : ViewModel() {
     fun setSelectedImage(image: Uri) {
         imageUpload.value = image
     }
+
+    fun setSelectedProfileImage(image: Uri) {
+        profileImageUpload.value = image
+    }
+
+
 
 //    val mutableUserPosts = MutableLiveData<List<PostMeta>>()
 //
@@ -255,8 +265,18 @@ class MainViewModel  : ViewModel() {
         imageFile.value = file
     }
 
+    fun setProfileImageFile(file: File) {
+        profileImageFile.value = file
+    }
+
+
+
     fun getImageFile() : File {
         return imageFile.value!!
+    }
+
+    fun getProfileImageFile() : File {
+        return profileImageFile.value!!
     }
 
     fun getImageURI(): Uri {
@@ -327,6 +347,13 @@ class MainViewModel  : ViewModel() {
 
         //EEE // XXX Write me while preserving referential integrity
     }
+
+    fun pfpSuccess(uuid: String) {
+        storage.uploadPfp(profileImageUpload.value!!, profileImageFile.value!!, uuid) {
+            profileImageUpload.value = Uri.EMPTY
+            profileImageFile.value = File("")
+        }
+    }
     fun pictureFailure() {
         // Note, the camera intent will only create the file if the user hits accept
         // so I've never seen this called
@@ -336,6 +363,14 @@ class MainViewModel  : ViewModel() {
     fun glideFetch(pictureUUID: String, imageView: ImageView) {
         Glide.fetch(storage.uuid2StorageReference(pictureUUID),
             imageView)
+    }
+    fun glideFetchPfp(pictureUUID: String, imageView: ImageView) {
+//        Glide.fetch(storage.pfpUuid2StorageReference(pictureUUID),
+//            imageView)
+        GlideApp.with(imageView.context) // Use the context to initialize Glide
+            .load(storage.pfpUuid2StorageReference(pictureUUID))
+            .error(R.drawable.baseline_person_24) // Set the error drawable here
+            .into(imageView)
     }
 
     /////////////////////////////////////////////////////////////
