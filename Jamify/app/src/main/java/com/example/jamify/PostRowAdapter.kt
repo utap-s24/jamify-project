@@ -49,8 +49,12 @@ class PostRowAdapter(val context: Activity, private val viewModel: MainViewModel
                 var auth = FirebaseAuth.getInstance()
 
                 val postInfo = getItem(position)
+                Log.d(javaClass.simpleName, "In here")
+
                 runBlocking {
                     viewModel.retrieveSongInfo(postInfo.songId)
+                    Log.d(javaClass.simpleName, "In here")
+
                     rowBinding.songAuthor.text = viewModel.loadedSongInfo?.value?.artist?.name
                     rowBinding.songTitle.text = viewModel.loadedSongInfo?.value?.title
                     rowBinding.postUsernameTextView.text = auth.currentUser?.displayName
@@ -88,11 +92,6 @@ class PostRowAdapter(val context: Activity, private val viewModel: MainViewModel
         }
     }
 
-    fun toMinutesAndSeconds(duration: Int): String {
-        val minutes = duration / 60000
-        val seconds = (duration % 60000) / 1000
-        return "$minutes:$seconds"
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
         val rowBinding = PostRowBinding.inflate(LayoutInflater.from(parent.context),

@@ -70,7 +70,7 @@ class MainViewModel  : ViewModel() {
     private var imageUpload = MutableLiveData<Uri>()
     private var imageFile = MutableLiveData<File>()
     private var caption = MutableLiveData<String>()
-
+    private var postPrivacy = MutableLiveData<Boolean>(true)
 
     // home fragment data
     var loadedSongInfo =  MutableLiveData<SongInfo>()
@@ -172,6 +172,11 @@ class MainViewModel  : ViewModel() {
         return postsEmpty
     }
 
+
+    fun setPrivacy(private: Boolean) {
+        // XXX Write me
+        postPrivacy.value = private
+    }
     fun getPublicPostsSize(): Int {
         return postList.value?.size ?: 0
     }
@@ -215,9 +220,9 @@ class MainViewModel  : ViewModel() {
                 ownerName = auth.currentUser?.displayName!!,
                 ownerUid = auth.currentUser?.uid!!,
                 photoUuid = imageFile.value?.name!!,
-                songTitle = "song name",
+                songTitle = songName.value!!,
                 songId= songId.value!!,
-                private = false,
+                private = postPrivacy.value!!,
                 caption = text
             // database sets firestoreID
             )

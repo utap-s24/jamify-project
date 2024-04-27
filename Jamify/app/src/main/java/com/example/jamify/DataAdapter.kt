@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.jamify.Data
 import com.example.jamify.MainViewModel
 import com.example.jamify.MyData
+import com.example.jamify.R
 import com.example.jamify.databinding.SongCardBinding
 import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
@@ -46,12 +47,11 @@ class DataAdapter(val context: Activity,
                 var prevSongSelected = viewModel.selectedIndex
 //                viewModel.selectedIndex = bindingAdapterPosition
                 viewModel.selectedIndex = bindingAdapterPosition
-                viewModel.songName.value = viewModel.getSong(bindingAdapterPosition).title
-                Log.d("DataAdapter", "Song name: ${viewModel.getSong(bindingAdapterPosition).id}")
-                viewModel.setSongId(viewModel.getSong(bindingAdapterPosition).id)
-//                clickListener(bindingAdapterPosition)
-                notifyItemChanged(prevSongSelected)
-                notifyItemChanged(bindingAdapterPosition)
+
+                clickListener(bindingAdapterPosition)
+
+
+
 
 
             }
@@ -74,7 +74,6 @@ class DataAdapter(val context: Activity,
 
 
         val currentData = viewModel.getCopyOfSongInfo()?.get(position)
-        val mediaPlayer = MediaPlayer.create(context, currentData?.preview?.toUri() )
 
 
         // dependency used to load image
@@ -85,21 +84,22 @@ class DataAdapter(val context: Activity,
         if (currentData != null) {
             Picasso.get().load(currentData.album.cover).into(rowBinding.musicImage)
 
-            rowBinding.musicTitle.text = currentData.title
-            rowBinding.btnPlay.setOnClickListener {
-                mediaPlayer.start()
-            }
-            rowBinding.btnPause.setOnClickListener {
-                mediaPlayer.pause()
-            }
-            // TODO: not sure if i need this
-            println(viewModel.selectedIndex)
-            if (viewModel.selectedIndex== position) {
-                rowBinding.songCard.setBackgroundColor(Color.YELLOW)
-            } else {
-                rowBinding.songCard.setBackgroundColor(Color.WHITE)
-            }
+            rowBinding.songAuthor.text = currentData.artist?.name
+            rowBinding.songTitle.text = currentData?.title
 
+            val mediaPlayer = MediaPlayer.create(
+                context,
+                currentData.preview.toUri()
+            )
+            rowBinding.musicplayerPlayButton.setOnClickListener {
+                if (mediaPlayer.isPlaying) {
+                    mediaPlayer.pause()
+                    rowBinding.musicplayerPlayButton.setImageResource(R.drawable.ic_play_arrow_24)
+                } else {
+                    mediaPlayer.start()
+                    rowBinding.musicplayerPlayButton.setImageResource(R.drawable.baseline_pause_circle_24)
+                }
+            }
 
         }
     }

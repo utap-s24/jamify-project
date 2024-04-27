@@ -4,7 +4,7 @@ data class SongInfo(
     val album: AlbumX,
     val artist: ArtistX,
     val available_countries: List<String>,
-    val bpm: Int,
+    val bpm: Double,
     val contributors: List<Contributor>,
     val disk_number: Int,
     val duration: Int,

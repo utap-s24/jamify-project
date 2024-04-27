@@ -27,7 +27,11 @@ class SongsRepository(private val api: APIInterface) {
 
 
     suspend fun retrieveSongInfo(id: Long) : SongInfo? {
+        Log.d(javaClass.simpleName, id.toString())
+
         val response = api.getSong(id)
+
+        Log.d(javaClass.simpleName, "retrieveSongInfo: " + response)
 //        var responseBody : SongInfo? = null
 //        response.enqueue(object : Callback<SongInfo?> {
 //            override fun onResponse(call: Call<SongInfo?>, response: Response<SongInfo?>) {

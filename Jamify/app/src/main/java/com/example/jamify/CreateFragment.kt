@@ -31,6 +31,7 @@ import java.io.IOException
 import java.io.InputStream
 import java.lang.Long
 import android.provider.OpenableColumns
+import androidx.navigation.fragment.findNavController
 import java.net.URI
 import java.util.UUID
 
@@ -119,46 +120,50 @@ class CreateFragment : Fragment() {
             val searchTerm = binding.searchText.text.toString()
             if (searchTerm.isNotEmpty()) {
                 Log.e("MainActivity", searchTerm)
+                binding.indeterminateBar.visibility = View.VISIBLE
                 searchSong(searchTerm)
             }
         }
 
+        binding.switchPrivacy.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                viewModel.setPrivacy(false)
+            } else {
+                viewModel.setPrivacy(true)
+            }
+        }
         // on pressing create, will upload image to firebase storage and will create firebase doc
-
         binding.create.setOnClickListener {
             if (viewModel.songName.value != "") {
                 if (viewModel.getImageFile().isFile()){
                     // upload image to firebase storage
                     // create firebase doc
 
-
-
-//                if (binding.image.drawable != null) {
-//                    // upload image to firebase storage
-//                    // create firebase doc
                     viewModel.pictureSuccess()
-//                }
                     Log.d("CreateFragment", viewModel.getCurrentAuthUser().toString())
 
                     // TODO: update view model list of posts in feed and private view
                     viewModel.createNote(binding.captionText.text.toString())
+                    viewModel.songId.value = -1
+                    viewModel.songName.value = ""
+                    binding.captionText.text.clear()
+                    binding.image.setImageResource(R.drawable.baseline_image_search_24)
+                    findNavController().navigate(R.id.homeFragment)
                 }
             }
             // otherwise, show popup to prompt user to select a song
         }
-
-
-
-
     }
 
-    fun uponSuccess(data : List<Data>) : List<Data> {
-        return data
-    }
     fun searchSong(searchTerm: String) : Unit {
+
+        binding.response.visibility = View.GONE
+        binding.selectedSongTitle.visibility = View.GONE
+
         viewModel.retrieveSongs(searchTerm)
         myAdapter.submitList(viewModel.getCopyOfSongInfo())
-
+        recyclerView.visibility = View.VISIBLE
+        binding.indeterminateBar.visibility = View.GONE
         recyclerView.adapter = myAdapter
         recyclerView.layoutManager = LinearLayoutManager(context)
 //                val textView = binding.response
@@ -168,9 +173,20 @@ class CreateFragment : Fragment() {
     }
     fun onClickListener(index: Int) : Unit {
         Log.d("CreateFragment", "onClickListener")
+        viewModel.songName.value = viewModel.getSong(index).title
+        Log.d("DataAdapter", "Song name: ${viewModel.getSong(index).id}")
+        viewModel.setSongId(viewModel.getSong(index).id)
+//                clickListener(bindingAdapterPosition)
+        recyclerView.visibility = View.GONE
+//        notifyItemChanged(bindingAdapterPosition)
         viewModel.selectedIndex = index
         viewModel.songName.value = viewModel.getSong(index).title
         viewModel.setSongId(viewModel.getSong(index).id)
+
+
+        binding.response.visibility = View.VISIBLE
+        binding.response.text = viewModel.songName.value
+        binding.selectedSongTitle.visibility = View.VISIBLE
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

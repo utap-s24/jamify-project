@@ -73,12 +73,6 @@ class HomeFragment : Fragment() {
 //
 //
 //        }
-        binding.recyclerView.addItemDecoration(
-            DividerItemDecoration(
-                context,
-                DividerItemDecoration.VERTICAL
-            )
-        )
         binding.recyclerView.adapter = postRowAdapter
 
         Log.d(javaClass.simpleName, "notifyDataSetChanged")

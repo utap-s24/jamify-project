@@ -1,3 +1,5 @@
+
+
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
 xmlns:tools="http://schemas.android.com/tools"
 android:layout_width="match_parent"
@@ -6,59 +8,105 @@ xmlns:app="http://schemas.android.com/apk/res-auto"
 android:layout_margin="40dp"
 tools:context=".CreateFragment">
 
-
-
+    <TextView
+        android:id="@+id/searchSongTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Choose a song to share."
+        android:textColor="@color/secondary_green"
+        android:textSize="22sp"
+        android:fontFamily="@font/circular_spotify_text_bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
 
     <EditText
         android:layout_width="0dp"
         android:id="@+id/searchText"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/searchSongTitle"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/search"
-        android:textSize="20sp"
+        android:textSize="15sp"
         android:hint="Search a song"
-        android:background="@drawable/rounded_rectangle_edittext"
-
-        android:padding="3dp"
-
+        android:backgroundTint="@color/light_gray"
+        android:background="@drawable/search_rounded"
+        android:fontFamily="@font/circular_spotify_text_light"
+        android:padding="5dp"
         ></EditText>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/searchText"
-
-        android:id="@+id/response"
-        ></TextView>
     <ImageButton
         android:layout_width="wrap_content"
         android:id="@+id/search"
         android:padding="5dp"
+
         android:background="@drawable/button_rounded"
+        android:backgroundTint="@color/light_gray"
+
         android:src="@drawable/baseline_search_24"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toEndOf="@+id/searchText"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-
+        app:layout_constraintTop_toTopOf="@+id/searchText"
         >
-
     </ImageButton>
+
+
+    <ProgressBar
+        android:id="@+id/indeterminateBar"
+        android:progressBackgroundTint="@color/logo_purple"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:minHeight="50dp"
+        android:minWidth="50dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/search"/>
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@+id/search"
-        app:layout_constraintBottom_toTopOf="@+id/imageText"
+
         android:id="@+id/recyclerView"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/purple"
+        android:fontFamily="@font/circular_spotify_text_bold"
+
+        android:textSize="18sp"
+        android:padding="5dp"
+        android:text="Selected Song:"
+        app:layout_constraintTop_toBottomOf="@+id/recyclerView"
+        app:layout_constraintStart_toStartOf="parent"
+        android:id="@+id/selectedSongTitle"
+
+        ></TextView>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/recyclerView"
+        app:layout_constraintStart_toEndOf="@+id/selectedSongTitle"
+        android:id="@+id/response"
+        android:padding="8dp"
+
+        android:fontFamily="@font/circular_spotify_text_light"
+        android:text="No song selected"
+
+        ></TextView>
+
 
     <TextView
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/recyclerView"
-        android:text="Upload or take a photo."
-        android:textSize="25sp"
+        app:layout_constraintTop_toBottomOf="@+id/response"
+        android:text="Upload a photo."
+        android:layout_margin="8dp"
+        android:textColor="@color/secondary_green"
+        android:textSize="22sp"
+        android:fontFamily="@font/circular_spotify_text_bold"
         android:id="@+id/imageText"
         android:layout_width="0dp"
         android:layout_height="50dp"
@@ -66,11 +114,12 @@ tools:context=".CreateFragment">
 
     </TextView>
 
-
     <ImageButton
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:id="@+id/image"
-        android:layout_height="300dp"
+        android:layout_height="200dp"
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop"
         android:src="@drawable/baseline_image_search_24"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -81,9 +130,11 @@ tools:context=".CreateFragment">
 
     <TextView
 
-        android:text="Caption"
+        android:text="Add a caption."
         android:id="@+id/captionTitle"
-        android:textSize="20sp"
+        android:textColor="@color/secondary_green"
+        android:textSize="22sp"
+        android:fontFamily="@font/circular_spotify_text_bold"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
@@ -93,69 +144,112 @@ tools:context=".CreateFragment">
 
     </TextView>
 
-    <TextView
-        android:text="Log your experience listening to the selected song by adding a diary entry or caption."
-        android:textSize="15sp"
-        android:id="@+id/captionInstructions"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/captionTitle"
-        >
-
-    </TextView>
 
     <EditText
         android:layout_width="match_parent"
         android:id="@+id/captionText"
         android:layout_height="100dp"
         android:textSize="15sp"
-        android:hint="Log your entry"
+        android:hint="Write your log entry here."
+        android:backgroundTint="@color/light_gray"
         android:background="@drawable/rounded_box"
-        android:padding="4dp"
+        android:padding="1dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/captionInstructions"
+        app:layout_constraintTop_toBottomOf="@+id/captionTitle"
+        android:fontFamily="@font/circular_spotify_text_light"
 
         ></EditText>
+    <TextView
 
-    <Button
-        android:layout_width="0dp"
+        android:text="Post Visiblity"
+        android:id="@+id/visibilityTitle"
+        android:textColor="@color/secondary_green"
+        android:textSize="22sp"
+        android:fontFamily="@font/circular_spotify_text_bold"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Cancel"
-        android:textSize="15sp"
-
-        android:id="@+id/cancel"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/switchPrivacy"
-        app:layout_constraintBottom_toBottomOf="parent"
-       app:layout_constraintTop_toBottomOf="@+id/captionText"
-        ></Button>
-    <!--A switch is the right option for a Boolean choice -->
-<!--    <androidx.appcompat.widget.SwitchCompat-->
-<!--        android:id="@+id/switchPrivacy"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:padding="5dp"-->
-
-<!--        app:layout_constraintStart_toEndOf="@+id/cancel"-->
-<!--        app:layout_constraintEnd_toStartOf="@+id/create"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        />-->
-
-
-    <Button
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Create"
-        android:textSize="15sp"
-
-        android:id="@+id/create"
-        app:layout_constraintStart_toEndOf="@+id/switchPrivacy"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/captionText"
+        >
 
-        ></Button>
+    </TextView>
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        app:layout_constraintTop_toBottomOf="@+id/visibilityTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:layout_margin="2dp"
+        android:id="@+id/visibilityLayout"
+        android:layout_height="wrap_content">
+        <TextView
+
+            android:text="Set to public view."
+            android:id="@+id/toggleText"
+            android:textSize="15sp"
+            android:fontFamily="@font/circular_spotify_text_medium"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            >
+
+        </TextView>
+        <!--A switch is the right option for a Boolean choice -->
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/switchPrivacy"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            />
+
+
+    </LinearLayout>
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        app:layout_constraintTop_toBottomOf="@+id/visibilityLayout"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:layout_margin="2dp"
+        android:layout_height="wrap_content">
+        <Button
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Cancel"
+            android:textSize="15sp"
+            android:backgroundTint="@color/logo_purple"
+            android:textColor="@color/white"
+            android:id="@+id/cancel"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/switchPrivacy"
+            app:layout_constraintBottom_toBottomOf="parent"
+           app:layout_constraintTop_toBottomOf="@+id/captionText"
+            ></Button>
+
+
+
+        <Button
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Create"
+            android:textSize="15sp"
+            android:backgroundTint="@color/logo_purple"
+            android:textColor="@color/white"
+            android:id="@+id/create"
+            app:layout_constraintStart_toEndOf="@+id/switchPrivacy"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/captionText"
+
+            ></Button>
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
