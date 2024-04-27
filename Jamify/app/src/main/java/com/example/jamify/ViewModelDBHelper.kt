@@ -48,6 +48,9 @@ class ViewModelDBHelper() {
             }
     }
 
+
+
+
     // After we successfully modify the db, we refetch the contents to update our
     // live data.  Hence the dbFetchNotes() calls below.
     fun updateNote(

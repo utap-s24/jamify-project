@@ -9,12 +9,14 @@ import android.widget.ImageView
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.example.jamify.glide.Glide
 import com.example.jamify.model.PostMeta
 import com.example.jamify.view.TakePictureWrapper
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.launch
 import java.io.File
 
 class MainViewModel  : ViewModel() {
@@ -24,17 +26,6 @@ class MainViewModel  : ViewModel() {
     fun takePictureUUID(uuid: String) {
         pictureUUID = uuid
     }
-    // LiveData for entire note list, all images
-    private var postList = MutableLiveData<List<PostMeta>>()
-    private var postsEmpty = MediatorLiveData<Boolean>().apply {
-        addSource(postList) {
-            this.value = it.isNullOrEmpty()
-        }
-    }
-    // Remember what is expanded in NoteAdapter
-    private var expandedMap = mutableMapOf<String,Boolean>()
-    private var allImages = MutableLiveData<List<String>>()
-
     // Track current authenticated user
     private var auth =  FirebaseAuth.getInstance()
 
@@ -42,6 +33,42 @@ class MainViewModel  : ViewModel() {
     private val storage = Storage()
     // Database access
     private val dbHelp = ViewModelDBHelper()
+    // LiveData for entire note list, all images
+
+    private var postList = MutableLiveData<List<PostMeta>>()
+    private var postsEmpty = MediatorLiveData<Boolean>().apply {
+        addSource(postList) {
+            this.value = it.isNullOrEmpty()
+        }
+    }
+
+    private var filterSongTitle = MutableLiveData<String>()
+    // Post List of Current users posts
+    private var userPosts = MediatorLiveData<List<PostMeta>>().apply{
+        // XXX Write me, viewModelScope.launch getSubreddits()
+        //filter based on user id
+        addSource(postList) {
+            viewModelScope.launch() {
+                value = getUserPosts()
+            }
+        }
+    }
+
+    private var filteredUserPosts = MediatorLiveData<List<PostMeta>>().apply{
+        // XXX Write me, viewModelScope.launch getSubreddits()
+        //filter based on user id
+        addSource(userPosts) {
+            viewModelScope.launch() {
+                value = filterPostsList()
+            }
+        }
+    }
+
+    // Remember what is expanded in NoteAdapter
+    private var expandedMap = mutableMapOf<String,Boolean>()
+    private var allImages = MutableLiveData<List<String>>()
+
+
 
 
 
@@ -79,6 +106,31 @@ class MainViewModel  : ViewModel() {
         imageUpload.value = image
     }
 
+//    val mutableUserPosts = MutableLiveData<List<PostMeta>>()
+//
+//    postList.observeForever { posts ->
+//        val userPosts = posts.filter { it.ownerUid == userId }
+//        mutableUserPosts.value = userPosts
+//    }
+
+    private fun getUserPosts():List<PostMeta>? {
+//        if (filterSongTitle.value == null) return userPosts.value
+//        removeAllCurrentSpans()
+        val userId = auth.currentUser?.uid!!
+        return postList.value?.filter {
+            it.searchForUser(userId)
+        }
+
+
+    }
+
+    private fun filterPostsList():List<PostMeta>? {
+        if (filterSongTitle.value == null) return userPosts.value
+//        removeAllCurrentSpans()
+        return userPosts.value?.filter {
+            it.searchForSong(filterSongTitle.value.toString())
+        }
+    }
     /////////////////////////////////////////////////////////////
     // Notes adapter.  With navigation, fragments are all
     // recycled aggressively, so state must live in viewModel
@@ -117,6 +169,33 @@ class MainViewModel  : ViewModel() {
     fun observePostsEmpty(): LiveData<Boolean> {
         return postsEmpty
     }
+
+    // Function to extract unique song titles from user's posts
+    fun extractSongTitles(): Set<String> {
+        Log.d("UserPost", "CALLING THIS METHOD" )
+        Log.d("UserPost", userPosts.value?.size.toString() )
+
+
+        val songTitles = mutableSetOf<String>()
+        userPosts.value?.forEach { post ->
+            Log.d("UserPost", "${post.ownerName}, ${post.songTitle}" )
+            Log.d("UserPost", post.songTitle )
+            songTitles.add(post.songTitle)
+        }
+        return songTitles
+    }
+
+    fun observeUserPosts():MediatorLiveData<List<PostMeta>> {
+        return userPosts
+    }
+
+    fun setSongFilter(songTitle: String){
+        filterSongTitle.value = songTitle
+    }
+    fun observeFilteredUserPosts(): LiveData<List<PostMeta>> {
+        return filteredUserPosts
+    }
+
     // Get a post from the memory cache
     fun getPost(position: Int) :  PostMeta {
         val post = postList.value?.get(position)

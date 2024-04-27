@@ -74,86 +74,89 @@
         app:layout_constraintTop_toBottomOf="@id/ProfileUsernameMeta">
 
         <!-- Posts count -->
-        <LinearLayout
-            android:layout_width="wrap_content"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:id="@+id/postCountLayout"
             android:orientation="vertical"
             android:gravity="center"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/filterPostsLayout"
             app:layout_constraintTop_toTopOf="parent"
             >
             <TextView
                 android:id="@+id/postsCountTextView"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/circular_spotify_text_medium"
                 android:text="24"
                 android:textSize="25sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
                 />
 
             <!-- Posts text -->
             <TextView
                 android:id="@+id/postsText"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/circular_spotify_text_light"
                 android:text="Posts"
                 android:textSize="15sp"
-                app:layout_constraintStart_toEndOf="@id/postsCountTextView"
-                app:layout_constraintBottom_toBottomOf="@id/postsCountTextView"/>
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/postsCountTextView"/>
 
-        </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <!-- Filter dropdown -->
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/filterPostsLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/filterPostsLayout"
             android:orientation="vertical"
             android:gravity="center"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toEndOf="@id/postCountLayout"
             app:layout_constraintEnd_toStartOf="@id/sortPostsLayout">
+
             <TextView
                 android:id="@+id/filterText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/circular_spotify_text_light"
                 android:text="Filter By: "
-                app:layout_constraintStart_toEndOf="@id/postsText"
                 android:textSize="15sp"
                 android:textStyle="bold"
-                android:layout_margin="4dp"
-                />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_margin="4dp" />
 
             <Spinner
                 android:id="@+id/filterSpinner"
-                android:layout_width="0dp"
+                android:layout_width="120dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:entries="@array/sort_options"
                 android:textSize="25sp"
                 android:textStyle="bold"
-                android:entries="@array/filter_options"
-                app:layout_constraintStart_toEndOf="@id/filterText"/>
+                android:ellipsize="end"
+                android:maxLines="1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/filterText" />
 
-        </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 
         <!-- Sort dropdown -->
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/sortPostsLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/sortPostsLayout"
             android:orientation="vertical"
             android:gravity="center"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toEndOf="@id/filterPostsLayout">
+            app:layout_constraintStart_toEndOf="@id/filterPostsLayout"
+            app:layout_constraintEnd_toEndOf="parent">
+
             <TextView
                 android:id="@+id/sortText"
                 android:layout_width="wrap_content"
@@ -162,18 +165,22 @@
                 android:text="Sort By: "
                 android:textSize="15sp"
                 android:textStyle="bold"
-                app:layout_constraintStart_toEndOf="@id/filterSpinner"
-                />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_margin="4dp" />
+
             <Spinner
                 android:id="@+id/sortSpinner"
-                android:layout_width="wrap_content"
+                android:layout_width="120dp"
                 android:layout_height="wrap_content"
                 android:entries="@array/sort_options"
-                android:fontFamily="@font/circular_spotify_text_light"
                 android:textSize="25sp"
-                android:layout_margin="4dp"
-                app:layout_constraintStart_toEndOf="@id/sortText"/>
-        </LinearLayout>
+                android:ellipsize="end"
+                android:maxLines="1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/sortText" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!-- RecyclerView for displaying posts -->
@@ -186,7 +193,7 @@
         android:layout_weight="1"
         android:scrollbars="vertical"
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-        app:spanCount="3"
+        app:spanCount="2"
         android:layout_gravity="center"
         />
 
