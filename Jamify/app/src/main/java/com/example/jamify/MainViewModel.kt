@@ -1,6 +1,5 @@
 package com.example.jamify
 
-import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 
@@ -10,14 +9,18 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+
+import com.example.jamify.com.example.jamify.APIInterface
+import com.example.jamify.com.example.jamify.SongsRepository
 import com.example.jamify.glide.Glide
 import com.example.jamify.glide.GlideApp
 import com.example.jamify.model.PostMeta
-import com.example.jamify.view.TakePictureWrapper
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.launch
+import retrofit2.HttpException
 import java.io.File
 
 
@@ -39,7 +42,7 @@ class MainViewModel  : ViewModel() {
     private val dbHelp = ViewModelDBHelper()
     // LiveData for entire note list, all images
 
-
+    // LiveData for entire posts list, all public posts
     private var postList = MutableLiveData<List<PostMeta>>()
     private var postsEmpty = MediatorLiveData<Boolean>().apply {
         addSource(postList) {
@@ -97,6 +100,15 @@ class MainViewModel  : ViewModel() {
     }
 
 
+    private var publicPosts = MediatorLiveData<List<PostMeta>>().apply {
+        addSource((postList)) {
+            viewModelScope.launch() {
+                value = filterPublicPosts()
+            }
+
+        // XXX Write me, viewModelScope.launch getPosts
+        }
+    }
     // Remember what is expanded in NoteAdapter
     private var expandedMap = mutableMapOf<String,Boolean>()
     private var allImages = MutableLiveData<List<String>>()
@@ -104,11 +116,11 @@ class MainViewModel  : ViewModel() {
 
 
 
-
+    private var api : APIInterface= APIInterface.create()
+    private var repository = SongsRepository(api)
     // create post data
     var songId = MutableLiveData<Long>()
     var songName = MutableLiveData<String>()
-
     var selectedIndex = 0
 
     private var searchedSongs = MutableLiveData<List<Data>>()
@@ -119,7 +131,17 @@ class MainViewModel  : ViewModel() {
     private var imageUpload = MutableLiveData<Uri>()
     private var imageFile = MutableLiveData<File>()
     private var caption = MutableLiveData<String>()
+    private var postPrivacy = MutableLiveData<Boolean>(true)
 
+    // home fragment data
+    var loadedSongInfo =  MutableLiveData<SongInfo>()
+
+
+    private fun filterPublicPosts():List<PostMeta>? {
+        return postList.value?.filter {
+            !it.private
+        }
+    }
 
     fun setSongId(id: Long) {
         Log.d(javaClass.simpleName, "setSongId $id")
@@ -136,6 +158,27 @@ class MainViewModel  : ViewModel() {
 
     fun getSong(index: Int): Data {
         return searchedSongs.value!![index]
+    }
+
+    suspend fun retrieveSongInfo(id: Long) : Unit{
+//                var result  =  repository.retrieveSongInfo(id)
+                loadedSongInfo.value = repository.retrieveSongInfo(id)
+                Log.d(javaClass.simpleName, loadedSongInfo?.value?.artist?.name!!)
+
+//            return result
+//
+//        } catch (e: HttpException) {
+//            Log.d(javaClass.simpleName, "HttpException")
+//        } catch (e: Throwable) {
+//            Log.d(javaClass.simpleName, "Throwable")
+//        }
+
+    }
+
+    fun retrieveSongs(searchTerm: String) {
+        viewModelScope.launch() {
+            searchedSongs.value = repository.retrieveSearchedSongs(searchTerm)
+        }
     }
 
     fun setSelectedImage(image: Uri) {
@@ -204,8 +247,15 @@ class MainViewModel  : ViewModel() {
     // Notes, memory cache and database interaction
     fun fetchInitialNotes(callback: ()->Unit) {
         dbHelp.fetchInitialNotes(postList, sortInfo.value!!, callback)
+
+      
+    fun observePublicPosts(): LiveData<List<PostMeta>> {
+        Log.d(javaClass.simpleName, "observePublicPosts " + publicPosts.value)
+        return publicPosts
     }
+
     fun observePosts(): LiveData<List<PostMeta>> {
+        Log.d(javaClass.simpleName, "observePosts " + postList.value)
         return postList
     }
     fun observePostsEmpty(): LiveData<Boolean> {
@@ -242,6 +292,13 @@ class MainViewModel  : ViewModel() {
     }
     fun observeFilteredUserPosts(): LiveData<List<PostMeta>> {
         return filteredUserPosts
+
+    fun setPrivacy(private: Boolean) {
+        // XXX Write me
+        postPrivacy.value = private
+    }
+    fun getPublicPostsSize(): Int {
+        return postList.value?.size ?: 0
     }
 
     // Get a post from the memory cache
@@ -282,6 +339,8 @@ class MainViewModel  : ViewModel() {
     fun getImageURI(): Uri {
         return imageUpload.value!!
     }
+
+    // Create a post and upload image to storage
     fun createNote(text: String) {
         Log.d(javaClass.simpleName, "currentAuthUser.name ${auth.currentUser?.displayName}")
         Log.d(javaClass.simpleName, "currentAuthUser.uid ${auth.currentUser?.uid}")
@@ -291,13 +350,14 @@ class MainViewModel  : ViewModel() {
                 ownerName = auth.currentUser?.displayName!!,
                 ownerUid = auth.currentUser?.uid!!,
                 photoUuid = imageFile.value?.name!!,
-            songTitle = "song name",
-            songId= songId.value!!,
-            private = false,
-            caption = text
+                songTitle = songName.value!!,
+                songId= songId.value!!,
+                private = postPrivacy.value!!,
+                caption = text
             // database sets firestoreID
         )
         dbHelp.createNote(post,postList, sortInfo.value!!)
+            )
     }
     fun removePostAt(position: Int) {
         //SSS
@@ -308,6 +368,7 @@ class MainViewModel  : ViewModel() {
         //EEE // XXX What do to before we delete note?
         Log.d(javaClass.simpleName, "remote note at pos: $position id: ${post.firestoreID}")
         dbHelp.removeNote(post, postList, sortInfo.value!!)
+
     }
 
     /////////////////////////////////////////////////////////////
@@ -374,10 +435,6 @@ class MainViewModel  : ViewModel() {
     }
 
     /////////////////////////////////////////////////////////////
-    // Create Post Data
-
-
-
-
+    // Create Post Dat
 
 }
