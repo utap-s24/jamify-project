@@ -19,6 +19,9 @@ import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.launch
 import java.io.File
 
+
+
+data class SortInfo(val ascending: Boolean)
 class MainViewModel  : ViewModel() {
     // Remember the uuid, and hence file name of file camera will create
     private var pictureUUID = ""
@@ -35,6 +38,7 @@ class MainViewModel  : ViewModel() {
     private val dbHelp = ViewModelDBHelper()
     // LiveData for entire note list, all images
 
+
     private var postList = MutableLiveData<List<PostMeta>>()
     private var postsEmpty = MediatorLiveData<Boolean>().apply {
         addSource(postList) {
@@ -43,6 +47,8 @@ class MainViewModel  : ViewModel() {
     }
 
     private var filterSongTitle = MutableLiveData<String>()
+    private var sortInfo = MutableLiveData(
+        SortInfo(false))
     // Post List of Current users posts
     private var userPosts = MediatorLiveData<List<PostMeta>>().apply{
         // XXX Write me, viewModelScope.launch getSubreddits()
@@ -62,7 +68,33 @@ class MainViewModel  : ViewModel() {
                 value = filterPostsList()
             }
         }
+
+        addSource(filterSongTitle) {
+            viewModelScope.launch() {
+                value = filterPostsList()
+            }
+        }
     }
+
+    fun observeSortInfo(): LiveData<SortInfo> {
+        return sortInfo
+    }
+
+    fun sortInfoClick(sortColumn: String,
+                      resultListener: () -> Unit) {
+        // XXX User has changed sort info
+        // Update `sortInfo` with the new sorting criteria
+        var ascending = true
+        if (sortColumn == "Newest") {
+            //if its the same column reverse ascending argument
+            ascending = false
+        }
+
+        sortInfo.value = SortInfo(ascending)
+        // Fetch the sorted note list from the database
+        fetchInitialNotes(resultListener)
+    }
+
 
     // Remember what is expanded in NoteAdapter
     private var expandedMap = mutableMapOf<String,Boolean>()
@@ -125,7 +157,7 @@ class MainViewModel  : ViewModel() {
     }
 
     private fun filterPostsList():List<PostMeta>? {
-        if (filterSongTitle.value == null) return userPosts.value
+        if (filterSongTitle.value == "---") return userPosts.value
 //        removeAllCurrentSpans()
         return userPosts.value?.filter {
             it.searchForSong(filterSongTitle.value.toString())
@@ -161,7 +193,7 @@ class MainViewModel  : ViewModel() {
     /////////////////////////////////////////////////////////////
     // Notes, memory cache and database interaction
     fun fetchInitialNotes(callback: ()->Unit) {
-        dbHelp.fetchInitialNotes(postList, callback)
+        dbHelp.fetchInitialNotes(postList, sortInfo.value!!, callback)
     }
     fun observePosts(): LiveData<List<PostMeta>> {
         return postList
@@ -182,6 +214,8 @@ class MainViewModel  : ViewModel() {
             Log.d("UserPost", post.songTitle )
             songTitles.add(post.songTitle)
         }
+
+
         return songTitles
     }
 
@@ -190,7 +224,11 @@ class MainViewModel  : ViewModel() {
     }
 
     fun setSongFilter(songTitle: String){
+        Log.d("song filter", "selected: ${songTitle}")
         filterSongTitle.value = songTitle
+
+        Log.d("song filter", "filterSongTitle = ${filterSongTitle.value.toString()}")
+
     }
     fun observeFilteredUserPosts(): LiveData<List<PostMeta>> {
         return filteredUserPosts
@@ -210,7 +248,7 @@ class MainViewModel  : ViewModel() {
         // Have to update text before calling updateNote
         post.caption = text
 
-        dbHelp.updateNote(post, postList)
+        dbHelp.updateNote(post, postList, sortInfo.value!!)
     }
 
     fun setImageFile(file: File) {
@@ -239,7 +277,7 @@ class MainViewModel  : ViewModel() {
             caption = text
             // database sets firestoreID
         )
-        dbHelp.createNote(post,postList)
+        dbHelp.createNote(post,postList, sortInfo.value!!)
     }
     fun removePostAt(position: Int) {
         //SSS
@@ -249,7 +287,7 @@ class MainViewModel  : ViewModel() {
 
         //EEE // XXX What do to before we delete note?
         Log.d(javaClass.simpleName, "remote note at pos: $position id: ${post.firestoreID}")
-        dbHelp.removeNote(post, postList)
+        dbHelp.removeNote(post, postList, sortInfo.value!!)
     }
 
     /////////////////////////////////////////////////////////////

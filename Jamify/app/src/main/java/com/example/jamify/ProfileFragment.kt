@@ -10,6 +10,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
 import androidx.core.view.MenuProvider
@@ -48,7 +49,7 @@ class ProfileFragment : Fragment() {
         val postRowAdapter = RVDiffAdapter(viewModel){}
         binding.postsRecyclerView.adapter = postRowAdapter
         // XXX Write me, observe posts
-        viewModel.observeUserPosts().observe(viewLifecycleOwner) {
+        viewModel.observeFilteredUserPosts().observe(viewLifecycleOwner) {
             if (it != null) {
                 println(it.size)
                 postRowAdapter.submitList(it)
@@ -77,13 +78,33 @@ class ProfileFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         viewModel.fetchInitialNotes(){}
-        viewModel.observeUserPosts().observe(viewLifecycleOwner) { _ ->
+        viewModel.observeUserPosts().observe(viewLifecycleOwner) { userPosts ->
             // Extract unique song titles from user's posts
-            val songTitles = viewModel.extractSongTitles().toTypedArray()
+            val songTitles = viewModel.extractSongTitles().toMutableList()
+            songTitles.add(0, "---") // Add "No Filter" as the default selection
+
             val filterSpinner = binding.filterSpinner
             val filterAdapter = ArrayAdapter(requireContext(), R.layout.simple_spinner_item, songTitles)
             filterAdapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item)
             filterSpinner.adapter = filterAdapter
+
+            binding.filterSpinner.onItemSelectedListener = object :
+                AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(parent: AdapterView<*>,
+                                            view: View, position: Int, id: Long) {
+                    Log.d("Profile", "pos $position")
+
+                    Log.d("Profile", songTitles.toString())
+                    viewModel.setSongFilter(songTitles[position])
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>) {
+                    Log.d("Profile", "onNothingSelected")
+                }
+            }
+
+            binding.postsCountTextView.text = userPosts.size.toString() // size will be 0 if the list is null
+
 
         }
 
@@ -101,27 +122,33 @@ class ProfileFragment : Fragment() {
         initAdapter(binding)
         val songTitles = viewModel.extractSongTitles().toTypedArray()
 
-        // Set the choices for the spinner
-        val spinnerArray = ArrayList<String>()
-        spinnerArray.add("one song")
-        spinnerArray.add("two song")
-        spinnerArray.add("three song")
-        spinnerArray.add("four sifheowirfherwoughbnwer")
-        spinnerArray.add("five")
-
-
-//
-        val filterSpinner = binding.filterSpinner
-        val filterAdapter = ArrayAdapter(requireContext(), R.layout.simple_spinner_item, songTitles)
-        filterAdapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item)
-        filterSpinner.adapter = filterAdapter
-
 
 
         binding.usernameTextView.text = currentUser?.displayName
-//        binding.recyclerView.layoutManager = LinearLayoutManager(context)
-//        binding.recyclerView.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
-//        initSwipeLayout(binding.swipeRefreshLayout)
+
+
+        val sortBy = arrayListOf<String>("Newest", "Oldest")
+        val sortSpinner = binding.sortSpinner
+        val filterAdapter = ArrayAdapter(requireContext(), R.layout.simple_spinner_item, sortBy)
+        filterAdapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item)
+        sortSpinner.adapter = filterAdapter
+
+        binding.sortSpinner.onItemSelectedListener = object :
+            AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>,
+                                        view: View, position: Int, id: Long) {
+                Log.d("Profile", "pos $position")
+
+                Log.d("Profile", songTitles.toString())
+//                viewModel.setSongFilter(songTitles[position])
+                viewModel.sortInfoClick(sortBy[position]){}
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {
+                Log.d("Profile", "onNothingSelected")
+            }
+        }
+
 
 
         binding.logoutButton.setOnClickListener {

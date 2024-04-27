@@ -88,8 +88,10 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/circular_spotify_text_medium"
-                android:text="24"
+                android:text=""
                 android:textSize="25sp"
+                android:textAlignment="center"
+                android:gravity="center"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 />
