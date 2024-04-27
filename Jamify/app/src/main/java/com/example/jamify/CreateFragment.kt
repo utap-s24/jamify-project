@@ -152,35 +152,19 @@ class CreateFragment : Fragment() {
 
     }
 
+    fun uponSuccess(data : List<Data>) : List<Data> {
+        return data
+    }
+    fun searchSong(searchTerm: String) : Unit {
+        viewModel.retrieveSongs(searchTerm)
+        myAdapter.submitList(viewModel.getCopyOfSongInfo())
 
-    fun searchSong(searchTerm: String) {
-        val retrofitBuilder = Retrofit.Builder()
-            .baseUrl("https://deezerdevs-deezer.p.rapidapi.com")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(APIInterface::class.java)
-
-        val retrofitData = retrofitBuilder.getData(searchTerm)
-
-        retrofitData.enqueue(object : Callback<MyData?> {
-            override fun onResponse(call: Call<MyData?>, response: Response<MyData?>) {
-                val responseBody = response.body()?.data!!
-                viewModel.setSearchedSongs(responseBody)
-                myAdapter.submitList(viewModel.getCopyOfSongInfo())
-
-                recyclerView.adapter = myAdapter
-                recyclerView.layoutManager = LinearLayoutManager(context)
+        recyclerView.adapter = myAdapter
+        recyclerView.layoutManager = LinearLayoutManager(context)
 //                val textView = binding.response
 //                textView.text = responseBody.toString()
-                Log.d("TAG: onResponse", "onResponse: "  + responseBody.toString())
+        Log.d("TAG: onResponse", "onResponse: setting searched songs")
 
-            }
-
-            override fun onFailure(call: Call<MyData?>, t: Throwable) {
-                // if api call is failure then this method is executed
-                Log.e("MainActivity", "onFailure: " + t.message)
-            }
-        })
     }
     fun onClickListener(index: Int) : Unit {
         Log.d("CreateFragment", "onClickListener")

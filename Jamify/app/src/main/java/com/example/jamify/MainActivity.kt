@@ -52,15 +52,6 @@ class MainActivity : AppCompatActivity() {
         val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(window.decorView.rootView.windowToken, 0)
     }
-
-    fun progressBarOn() {
-        binding.indeterminateBar.visibility = View.VISIBLE
-    }
-
-    fun progressBarOff() {
-        binding.indeterminateBar.visibility = View.GONE
-    }
-
     private fun initMenu() {
         addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
@@ -118,7 +109,6 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
             finish()
         }
-
 
         binding.root.setOnTouchListener { _, event ->
             hideKeyboard()
