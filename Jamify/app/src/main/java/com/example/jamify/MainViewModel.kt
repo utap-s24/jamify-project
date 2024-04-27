@@ -374,6 +374,7 @@ class MainViewModel  : ViewModel() {
     private fun imageListReturns(pictureUUIDs: List<String>) {
         allImages.value = pictureUUIDs
     }
+
     // NB: Images are not sorted.  We need to add a timestamp if we want that
     fun refreshAllImages() {
         storage.listAllImages(::imageListReturns)

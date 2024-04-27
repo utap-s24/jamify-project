@@ -57,7 +57,7 @@ class PostRowAdapter(val context: Activity, private val viewModel: MainViewModel
 
                     rowBinding.songAuthor.text = viewModel.loadedSongInfo?.value?.artist?.name
                     rowBinding.songTitle.text = viewModel.loadedSongInfo?.value?.title
-                    rowBinding.postUsernameTextView.text = auth.currentUser?.displayName
+                    rowBinding.postUsernameTextView.text = postInfo?.ownerName
                     rowBinding.postCaption.text = postInfo.caption
 
                     val mediaPlayer = MediaPlayer.create(

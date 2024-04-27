@@ -21,6 +21,7 @@ data class PostMeta(
     var byteSize : Long = 0L,
     var caption: String = "",
     var songId : Long = 0L,
+    val displayName : String = "",
     val private: Boolean = false,
     // Written on the server
     @ServerTimestamp val timeStamp: Timestamp? = null,
