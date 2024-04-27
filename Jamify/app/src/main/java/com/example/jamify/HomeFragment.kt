@@ -59,7 +59,7 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d(javaClass.simpleName, "onViewCreated")
-        val postRowAdapter = PostRowAdapter(viewModel)
+        val postRowAdapter = PostRowAdapter(requireActivity(), viewModel)
 //        {
 //            Log.d("OnePost",
 //                String.format("OnePost title %s",

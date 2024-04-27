@@ -37,7 +37,6 @@ class MainViewModel  : ViewModel() {
     }
 
     private var publicPosts = MediatorLiveData<List<PostMeta>>().apply {
-
         addSource((postList)) {
             viewModelScope.launch() {
                 value = filterPublicPosts()
