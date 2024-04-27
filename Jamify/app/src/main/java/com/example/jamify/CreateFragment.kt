@@ -31,7 +31,9 @@ import java.io.IOException
 import java.io.InputStream
 import java.lang.Long
 import android.provider.OpenableColumns
+import androidx.core.widget.doAfterTextChanged
 import androidx.navigation.fragment.findNavController
+import kotlinx.coroutines.runBlocking
 import java.net.URI
 import java.util.UUID
 
@@ -84,7 +86,8 @@ class CreateFragment : Fragment() {
         recyclerView = binding.recyclerView
         myAdapter = DataAdapter(requireActivity(), viewModel, ::onClickListener)
 
-
+        recyclerView.adapter = myAdapter
+        recyclerView.layoutManager = LinearLayoutManager(context)
         // populate adapter with list of songs
 //        val retrofitBuilder = Retrofit.Builder()
 //            .baseUrl("https://deezerdevs-deezer.p.rapidapi.com")
@@ -115,7 +118,11 @@ class CreateFragment : Fragment() {
             openFileChooser()
         }
 
-
+        binding.searchText.doAfterTextChanged {
+            recyclerView.visibility = View.GONE
+            binding.response.visibility = View.VISIBLE
+            binding.selectedSongTitle.visibility = View.VISIBLE
+        }
         binding.search.setOnClickListener {
             val searchTerm = binding.searchText.text.toString()
             if (searchTerm.isNotEmpty()) {
@@ -132,6 +139,7 @@ class CreateFragment : Fragment() {
                 viewModel.setPrivacy(true)
             }
         }
+
         // on pressing create, will upload image to firebase storage and will create firebase doc
         binding.create.setOnClickListener {
             if (viewModel.songName.value != "") {
@@ -159,13 +167,15 @@ class CreateFragment : Fragment() {
 
         binding.response.visibility = View.GONE
         binding.selectedSongTitle.visibility = View.GONE
+        runBlocking {
+            viewModel.retrieveSongs(searchTerm)
+            myAdapter.submitList(viewModel.getCopyOfSongInfo())
+            myAdapter.notifyDataSetChanged()
 
-        viewModel.retrieveSongs(searchTerm)
-        myAdapter.submitList(viewModel.getCopyOfSongInfo())
-        recyclerView.visibility = View.VISIBLE
-        binding.indeterminateBar.visibility = View.GONE
-        recyclerView.adapter = myAdapter
-        recyclerView.layoutManager = LinearLayoutManager(context)
+            recyclerView.visibility = View.VISIBLE
+            binding.indeterminateBar.visibility = View.GONE
+        }
+
 //                val textView = binding.response
 //                textView.text = responseBody.toString()
         Log.d("TAG: onResponse", "onResponse: setting searched songs")

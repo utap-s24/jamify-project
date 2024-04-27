@@ -175,10 +175,9 @@ class MainViewModel  : ViewModel() {
 
     }
 
-    fun retrieveSongs(searchTerm: String) {
-        viewModelScope.launch() {
-            searchedSongs.value = repository.retrieveSearchedSongs(searchTerm)
-        }
+    suspend fun retrieveSongs(searchTerm: String) {
+       searchedSongs.value = repository.retrieveSearchedSongs(searchTerm)
+
     }
 
     fun setSelectedImage(image: Uri) {

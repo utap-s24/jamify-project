@@ -37,6 +37,8 @@
                 android:id="@+id/songTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="@color/purple"
+                android:fontFamily="@font/circular_spotify_text_medium"
                 android:textSize="20sp"
                 android:text="Fake Artist"/>
             <TextView
