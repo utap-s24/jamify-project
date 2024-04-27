@@ -17,8 +17,9 @@ class ViewModelDBHelper() {
     }
 
     fun fetchInitialNotes(notesList: MutableLiveData<List<PostMeta>>,
+                          sortInfo: SortInfo,
                           callback:()->Unit) {
-        dbFetchNotes(notesList, callback)
+        dbFetchNotes(notesList, sortInfo, callback)
     }
     /////////////////////////////////////////////////////////////
     // Interact with Firestore db
@@ -29,30 +30,54 @@ class ViewModelDBHelper() {
     // But be careful about how listener updates live data
     // and noteListener?.remove() in onCleared
     private fun dbFetchNotes(notesList: MutableLiveData<List<PostMeta>>,
+                             sortInfo: SortInfo,
                              callback:()->Unit = {}) {
-        db.collection(collectionRoot)
-            .orderBy("timeStamp", Query.Direction.DESCENDING)
-            .limit(100)
-            .get()
-            .addOnSuccessListener { result ->
-                Log.d(javaClass.simpleName, "posts fetch ${result!!.documents.size}")
-                // NB: This is done on a background thread
-                notesList.postValue(result.documents.mapNotNull {
-                    it.toObject(PostMeta::class.java)
-                })
-                callback()
-            }
-            .addOnFailureListener {
-                Log.d(javaClass.simpleName, "posts fetch FAILED ", it)
-                callback()
-            }
+        if (sortInfo.ascending) {
+            db.collection(collectionRoot)
+                .orderBy("timeStamp", Query.Direction.ASCENDING)
+                .limit(100)
+                .get()
+                .addOnSuccessListener { result ->
+                    Log.d(javaClass.simpleName, "posts fetch ${result!!.documents.size}")
+                    // NB: This is done on a background thread
+                    notesList.postValue(result.documents.mapNotNull {
+                        it.toObject(PostMeta::class.java)
+                    })
+                    callback()
+                }
+                .addOnFailureListener {
+                    Log.d(javaClass.simpleName, "posts fetch FAILED ", it)
+                    callback()
+                }
+        } else {
+            db.collection(collectionRoot)
+                .orderBy("timeStamp", Query.Direction.DESCENDING)
+                .limit(100)
+                .get()
+                .addOnSuccessListener { result ->
+                    Log.d(javaClass.simpleName, "posts fetch ${result!!.documents.size}")
+                    // NB: This is done on a background thread
+                    notesList.postValue(result.documents.mapNotNull {
+                        it.toObject(PostMeta::class.java)
+                    })
+                    callback()
+                }
+                .addOnFailureListener {
+                    Log.d(javaClass.simpleName, "posts fetch FAILED ", it)
+                    callback()
+                }
+        }
     }
+
+
+
 
     // After we successfully modify the db, we refetch the contents to update our
     // live data.  Hence the dbFetchNotes() calls below.
     fun updateNote(
         note: PostMeta,
-        notesList: MutableLiveData<List<PostMeta>>
+        notesList: MutableLiveData<List<PostMeta>>,
+        sortInfo: SortInfo
     ) {
         val pictureUUIDs = note.photoUuid
         //SSS
@@ -65,7 +90,7 @@ class ViewModelDBHelper() {
 //                    javaClass.simpleName,
 //                   "Note update \"${elipsizeString(note.caption)}\" len ${pictureUUIDs.length} id: ${note.firestoreID}"
 //                )
-                dbFetchNotes(notesList)
+                dbFetchNotes(notesList, sortInfo)
             }
             .addOnFailureListener { e ->
 //                Log.d(javaClass.simpleName, "Note update FAILED \"${elipsizeString(note.text)}\"")
@@ -75,7 +100,8 @@ class ViewModelDBHelper() {
 
     fun createNote(
         note: PostMeta,
-        notesList: MutableLiveData<List<PostMeta>>
+        notesList: MutableLiveData<List<PostMeta>>,
+        sortInfo: SortInfo
     ) {
         // We can get ID locally
         // note.firestoreID = db.collection("allNotes").document().id
@@ -87,7 +113,7 @@ class ViewModelDBHelper() {
                     javaClass.simpleName,
                     "Note create \"${elipsizeString(note.caption)}\" id: ${note.firestoreID}"
                 )
-                dbFetchNotes(notesList)
+                dbFetchNotes(notesList, sortInfo)
             }
             .addOnFailureListener { e ->
 //                Log.d(javaClass.simpleName, "Note create FAILED \"${elipsizeString(note.text)}\"")
@@ -97,7 +123,8 @@ class ViewModelDBHelper() {
 
     fun removeNote(
         note: PostMeta,
-        notesList: MutableLiveData<List<PostMeta>>
+        notesList: MutableLiveData<List<PostMeta>>,
+        sortInfo: SortInfo
     ) {
         db.collection(collectionRoot)
             .document(note.firestoreID)
@@ -107,7 +134,7 @@ class ViewModelDBHelper() {
                     javaClass.simpleName,
                     "Note delete \"${elipsizeString(note.caption)}\" id: ${note.firestoreID}"
                 )
-                dbFetchNotes(notesList)
+                dbFetchNotes(notesList, sortInfo)
             }
             .addOnFailureListener { e ->
 //                Log.d(javaClass.simpleName, "Note deleting FAILED \"${elipsizeString(note.text)}\"")

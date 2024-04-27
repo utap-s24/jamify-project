@@ -9,16 +9,23 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+
 import com.example.jamify.com.example.jamify.APIInterface
 import com.example.jamify.com.example.jamify.SongsRepository
 import com.example.jamify.glide.Glide
+import com.example.jamify.glide.GlideApp
 import com.example.jamify.model.PostMeta
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.File
 
+
+
+data class SortInfo(val ascending: Boolean)
 class MainViewModel  : ViewModel() {
     // Remember the uuid, and hence file name of file camera will create
     private var pictureUUID = ""
@@ -26,7 +33,14 @@ class MainViewModel  : ViewModel() {
     fun takePictureUUID(uuid: String) {
         pictureUUID = uuid
     }
+    // Track current authenticated user
+    private var auth =  FirebaseAuth.getInstance()
 
+    // Firestore state
+    private val storage = Storage()
+    // Database access
+    private val dbHelp = ViewModelDBHelper()
+    // LiveData for entire note list, all images
 
     // LiveData for entire posts list, all public posts
     private var postList = MutableLiveData<List<PostMeta>>()
@@ -35,6 +49,56 @@ class MainViewModel  : ViewModel() {
             this.value = it.isNullOrEmpty()
         }
     }
+
+    private var filterSongTitle = MutableLiveData<String>()
+    private var sortInfo = MutableLiveData(
+        SortInfo(false))
+    // Post List of Current users posts
+    private var userPosts = MediatorLiveData<List<PostMeta>>().apply{
+        // XXX Write me, viewModelScope.launch getSubreddits()
+        //filter based on user id
+        addSource(postList) {
+            viewModelScope.launch() {
+                value = getUserPosts()
+            }
+        }
+    }
+
+    private var filteredUserPosts = MediatorLiveData<List<PostMeta>>().apply{
+        // XXX Write me, viewModelScope.launch getSubreddits()
+        //filter based on user id
+        addSource(userPosts) {
+            viewModelScope.launch() {
+                value = filterPostsList()
+            }
+        }
+
+        addSource(filterSongTitle) {
+            viewModelScope.launch() {
+                value = filterPostsList()
+            }
+        }
+    }
+
+    fun observeSortInfo(): LiveData<SortInfo> {
+        return sortInfo
+    }
+
+    fun sortInfoClick(sortColumn: String,
+                      resultListener: () -> Unit) {
+        // XXX User has changed sort info
+        // Update `sortInfo` with the new sorting criteria
+        var ascending = true
+        if (sortColumn == "Newest") {
+            //if its the same column reverse ascending argument
+            ascending = false
+        }
+
+        sortInfo.value = SortInfo(ascending)
+        // Fetch the sorted note list from the database
+        fetchInitialNotes(resultListener)
+    }
+
 
     private var publicPosts = MediatorLiveData<List<PostMeta>>().apply {
         addSource((postList)) {
@@ -49,13 +113,7 @@ class MainViewModel  : ViewModel() {
     private var expandedMap = mutableMapOf<String,Boolean>()
     private var allImages = MutableLiveData<List<String>>()
 
-    // Track current authenticated user
-    private var auth =  FirebaseAuth.getInstance()
 
-    // Firestore state
-    private val storage = Storage()
-    // Database access
-    private val dbHelp = ViewModelDBHelper()
 
 
     private var api : APIInterface= APIInterface.create()
@@ -66,6 +124,9 @@ class MainViewModel  : ViewModel() {
     var selectedIndex = 0
 
     private var searchedSongs = MutableLiveData<List<Data>>()
+
+    private var profileImageUpload = MutableLiveData<Uri>()
+    private var profileImageFile = MutableLiveData<File>()
 
     private var imageUpload = MutableLiveData<Uri>()
     private var imageFile = MutableLiveData<File>()
@@ -124,6 +185,37 @@ class MainViewModel  : ViewModel() {
         imageUpload.value = image
     }
 
+    fun setSelectedProfileImage(image: Uri) {
+        profileImageUpload.value = image
+    }
+
+
+
+//    val mutableUserPosts = MutableLiveData<List<PostMeta>>()
+//
+//    postList.observeForever { posts ->
+//        val userPosts = posts.filter { it.ownerUid == userId }
+//        mutableUserPosts.value = userPosts
+//    }
+
+    private fun getUserPosts():List<PostMeta>? {
+//        if (filterSongTitle.value == null) return userPosts.value
+//        removeAllCurrentSpans()
+        val userId = auth.currentUser?.uid!!
+        return postList.value?.filter {
+            it.searchForUser(userId)
+        }
+
+
+    }
+
+    private fun filterPostsList():List<PostMeta>? {
+        if (filterSongTitle.value == "---") return userPosts.value
+//        removeAllCurrentSpans()
+        return userPosts.value?.filter {
+            it.searchForSong(filterSongTitle.value.toString())
+        }
+    }
     /////////////////////////////////////////////////////////////
     // Notes adapter.  With navigation, fragments are all
     // recycled aggressively, so state must live in viewModel
@@ -153,12 +245,10 @@ class MainViewModel  : ViewModel() {
 
     /////////////////////////////////////////////////////////////
     // Notes, memory cache and database interaction
-    fun fetchInitialPosts(callback: ()->Unit) {
-        dbHelp.fetchInitialNotes(postList, callback)
+    fun fetchInitialNotes(callback: ()->Unit) {
+        dbHelp.fetchInitialNotes(postList, sortInfo.value!!, callback)
 
-        Log.d(javaClass.simpleName, "observePosts " + postList.value)
-
-    }
+      
     fun observePublicPosts(): LiveData<List<PostMeta>> {
         Log.d(javaClass.simpleName, "observePublicPosts " + publicPosts.value)
         return publicPosts
@@ -172,6 +262,36 @@ class MainViewModel  : ViewModel() {
         return postsEmpty
     }
 
+    // Function to extract unique song titles from user's posts
+    fun extractSongTitles(): Set<String> {
+        Log.d("UserPost", "CALLING THIS METHOD" )
+        Log.d("UserPost", userPosts.value?.size.toString() )
+
+
+        val songTitles = mutableSetOf<String>()
+        userPosts.value?.forEach { post ->
+            Log.d("UserPost", "${post.ownerName}, ${post.songTitle}" )
+            Log.d("UserPost", post.songTitle )
+            songTitles.add(post.songTitle)
+        }
+
+
+        return songTitles
+    }
+
+    fun observeUserPosts():MediatorLiveData<List<PostMeta>> {
+        return userPosts
+    }
+
+    fun setSongFilter(songTitle: String){
+        Log.d("song filter", "selected: ${songTitle}")
+        filterSongTitle.value = songTitle
+
+        Log.d("song filter", "filterSongTitle = ${filterSongTitle.value.toString()}")
+
+    }
+    fun observeFilteredUserPosts(): LiveData<List<PostMeta>> {
+        return filteredUserPosts
 
     fun setPrivacy(private: Boolean) {
         // XXX Write me
@@ -195,15 +315,25 @@ class MainViewModel  : ViewModel() {
         // Have to update text before calling updateNote
         post.caption = text
 
-        dbHelp.updateNote(post, postList)
+        dbHelp.updateNote(post, postList, sortInfo.value!!)
     }
 
     fun setImageFile(file: File) {
         imageFile.value = file
     }
 
+    fun setProfileImageFile(file: File) {
+        profileImageFile.value = file
+    }
+
+
+
     fun getImageFile() : File {
         return imageFile.value!!
+    }
+
+    fun getProfileImageFile() : File {
+        return profileImageFile.value!!
     }
 
     fun getImageURI(): Uri {
@@ -225,8 +355,9 @@ class MainViewModel  : ViewModel() {
                 private = postPrivacy.value!!,
                 caption = text
             // database sets firestoreID
+        )
+        dbHelp.createNote(post,postList, sortInfo.value!!)
             )
-        dbHelp.createNote(post,postList)
     }
     fun removePostAt(position: Int) {
         //SSS
@@ -235,8 +366,9 @@ class MainViewModel  : ViewModel() {
         storage.deleteImage(post.photoUuid)
 
         //EEE // XXX What do to before we delete note?
-        Log.d(javaClass.simpleName, "remote post at pos: $position id: ${post.firestoreID}")
-        dbHelp.removeNote(post, postList)
+        Log.d(javaClass.simpleName, "remote note at pos: $position id: ${post.firestoreID}")
+        dbHelp.removeNote(post, postList, sortInfo.value!!)
+
     }
 
     /////////////////////////////////////////////////////////////
@@ -276,6 +408,13 @@ class MainViewModel  : ViewModel() {
 
         //EEE // XXX Write me while preserving referential integrity
     }
+
+    fun pfpSuccess(uuid: String) {
+        storage.uploadPfp(profileImageUpload.value!!, profileImageFile.value!!, uuid) {
+            profileImageUpload.value = Uri.EMPTY
+            profileImageFile.value = File("")
+        }
+    }
     fun pictureFailure() {
         // Note, the camera intent will only create the file if the user hits accept
         // so I've never seen this called
@@ -286,12 +425,16 @@ class MainViewModel  : ViewModel() {
         Glide.fetch(storage.uuid2StorageReference(pictureUUID),
             imageView)
     }
+    fun glideFetchPfp(pictureUUID: String, imageView: ImageView) {
+//        Glide.fetch(storage.pfpUuid2StorageReference(pictureUUID),
+//            imageView)
+        GlideApp.with(imageView.context) // Use the context to initialize Glide
+            .load(storage.pfpUuid2StorageReference(pictureUUID))
+            .error(R.drawable.baseline_person_24) // Set the error drawable here
+            .into(imageView)
+    }
 
     /////////////////////////////////////////////////////////////
-    // Create Post Data
-
-
-
-
+    // Create Post Dat
 
 }

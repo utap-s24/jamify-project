@@ -49,10 +49,10 @@ class LogInActivity : AppCompatActivity() {
                         if (it.isSuccessful){
                             binding.missingEmailPassTextview.text = "Logging in"
                             //TODO: does this redirect us to the home frag?
-//                            val intent = Intent(this, MainActivity::class.java)
-//                            startActivity(intent)
+                            val intent = Intent(this, MainActivity::class.java)
+                            startActivity(intent)
 //                            //after successful sign up end this activity
-//                            finish()
+                            finish()
                         } else {
                             binding.missingEmailPassTextview.text = it.exception.toString()
                         }

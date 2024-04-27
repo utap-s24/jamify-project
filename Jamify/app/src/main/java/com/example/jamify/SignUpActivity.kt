@@ -67,16 +67,13 @@ class SignUpActivity : AppCompatActivity() {
             } else {
                 binding.missingEmailPassTextview.text = "Must enter a username"
             }
+        }
 
-
-
-            binding.loginRedirectText.setOnClickListener {
-                val loginIntent = Intent(this, LogInActivity::class.java)
-                startActivity(loginIntent)
-                finish()
-            }
-
-
+        binding.loginRedirectText.setOnClickListener {
+            Log.d("SignUp", "Pressed log in redirectgn")
+            val loginIntent = Intent(this, LogInActivity::class.java)
+            startActivity(loginIntent)
+            finish()
         }
     }
 }

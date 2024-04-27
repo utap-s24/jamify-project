@@ -39,7 +39,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var auth: FirebaseAuth
     private  var user: FirebaseUser? = null
-    private lateinit var authUser : AuthUser
+//    private lateinit var authUser : AuthUser
     private val viewModel: MainViewModel by viewModels()
     companion object {
         const val TAG = "MainActivity"

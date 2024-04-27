@@ -18,6 +18,9 @@ class Storage () {
     private val photoStorage: StorageReference =
         FirebaseStorage.getInstance().reference.child("images")
 
+    private val pfpStorage: StorageReference =
+        FirebaseStorage.getInstance().reference.child("pfps")
+
 
 
     private fun deleteFile(localFile: File, uuid: String) {
@@ -51,6 +54,36 @@ class Storage () {
                 deleteFile(localFile, file.toString())
             }
     }
+
+    fun uploadPfp(fileUri: Uri, file: File, userUid: String, uploadSuccess:()->Unit) {
+        //SSS
+
+//        photoStorage.child(file.name).delete()
+//            .addOnSuccessListener {
+//                Log.d(javaClass.simpleName, "Deleted $file.name")
+//            }
+//            .addOnFailureListener {
+//                Log.d(javaClass.simpleName, "Delete FAILED of $file.name")
+//            }
+        val uuidRef = pfpStorage.child(userUid + ".jpg") // Set the filename explicitly to the UID
+
+        val metadata = StorageMetadata.Builder()
+            .setContentType("image/jpg")
+            .build()
+
+        val uploadTask = uuidRef.putFile(fileUri, metadata)
+
+        val localFile = file
+
+        uploadTask.addOnFailureListener {
+            // Handle unsuccessful uploads
+            deleteFile(localFile, file.toString())
+        }.addOnSuccessListener {
+            // taskSnapshot.metadata contains file metadata such as size, content-type, etc.
+            uploadSuccess()
+            deleteFile(localFile, file.toString())
+        }
+    }
     fun deleteImage(pictureUUID: String) {
         // Delete the file
         photoStorage.child(pictureUUID).delete()
@@ -78,5 +111,10 @@ class Storage () {
 
     fun uuid2StorageReference(pictureUUID: String): StorageReference {
         return photoStorage.child(pictureUUID)
+    }
+
+    fun pfpUuid2StorageReference(pfpUUID: String): StorageReference {
+        Log.d("pfp", pfpStorage.child(pfpUUID).toString())
+        return pfpStorage.child(pfpUUID)
     }
 }
