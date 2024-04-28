@@ -1,11 +1,15 @@
 package com.example.jamify
 
+import android.app.Application
 import android.content.Context
+import android.media.MediaPlayer
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 
 import android.util.Log
 import android.widget.ImageView
+import androidx.core.net.toUri
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
@@ -28,7 +32,7 @@ import java.util.UUID
 
 
 data class SortInfo(val ascending: Boolean)
-class MainViewModel  : ViewModel() {
+class MainViewModel(application: Application) : AndroidViewModel(application){
     // Remember the uuid, and hence file name of file camera will create
     private var pictureUUID = ""
     // Only call this from TakePictureWrapper
@@ -52,10 +56,20 @@ class MainViewModel  : ViewModel() {
             this.value = it.isNullOrEmpty()
         }
     }
+    val placeholderSong = "https://cdns-preview-5.dzcdn.net/stream/c-56d349f2423e3b3da5c2eeecca1ab512-13.mp3".toUri()
+
+//    var mediaPlayer: MediaPlayer = MediaPlayer.create(
+//            application.applicationContext,
+//            placeholderSong
+//    )
+    var mediaPlayer = MediaPlayer()
 
     private var filterSongTitle = MutableLiveData<String>()
     private var sortInfo = MutableLiveData(
         SortInfo(false))
+    private var songPlayingPos = MutableLiveData<Int>(-1)
+
+
     // Post List of Current users posts
     private var userPosts = MediatorLiveData<List<PostMeta>>().apply{
         // XXX Write me, viewModelScope.launch getSubreddits()
@@ -140,7 +154,17 @@ class MainViewModel  : ViewModel() {
 
     // home fragment data
     var loadedSongInfo =  MutableLiveData<SongInfo>()
+    fun setSongPlayingPos(index : Int) {
+        songPlayingPos.value = index
+    }
 
+    fun observeSongPlayingPos() : LiveData<Int> {
+        return songPlayingPos
+    }
+
+    fun getSongPlayingPos() : Int {
+        return songPlayingPos.value!!
+    }
 
     private fun filterPublicPosts():List<PostMeta>? {
         return postList.value?.filter {
@@ -165,19 +189,8 @@ class MainViewModel  : ViewModel() {
         return searchedSongs.value!![index]
     }
 
-    suspend fun retrieveSongInfo(id: Long) : Unit{
-//                var result  =  repository.retrieveSongInfo(id)
-                loadedSongInfo.value = repository.retrieveSongInfo(id)
-                Log.d(javaClass.simpleName, loadedSongInfo?.value?.artist?.name!!)
-
-//            return result
-//
-//        } catch (e: HttpException) {
-//            Log.d(javaClass.simpleName, "HttpException")
-//        } catch (e: Throwable) {
-//            Log.d(javaClass.simpleName, "Throwable")
-//        }
-
+    suspend fun retrieveSongInfo(id: Long) : SongInfo{
+        return repository.retrieveSongInfo(id)!!
     }
 
     suspend fun retrieveSongs(searchTerm: String) {

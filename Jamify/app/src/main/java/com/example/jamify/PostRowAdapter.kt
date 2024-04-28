@@ -14,6 +14,7 @@ import com.example.jamify.model.PostMeta
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.runBlocking
+import kotlin.math.sin
 
 /**
  * Created by witchel on 8/25/2019
@@ -29,6 +30,7 @@ import kotlinx.coroutines.runBlocking
 // You can call adapterPosition to get the index of the selected item
 class PostRowAdapter(val context: Activity, private val viewModel: MainViewModel)
     : ListAdapter<PostMeta, PostRowAdapter.VH> (Diff()) {
+
     class Diff: DiffUtil.ItemCallback<PostMeta>() {
 
         override fun areItemsTheSame(oldItem: PostMeta, newItem: PostMeta): Boolean {
@@ -40,12 +42,23 @@ class PostRowAdapter(val context: Activity, private val viewModel: MainViewModel
 
     }
 
+    private fun getPos(holder: RecyclerView.ViewHolder) : Int {
+        val pos = holder.bindingAdapterPosition
+        // notifyDataSetChanged was called, so position is not known
+        if( pos == RecyclerView.NO_POSITION) {
+            return holder.absoluteAdapterPosition
+        }
+        return pos
+    }
+
     inner class VH(private val rowBinding: PostRowBinding) :
         RecyclerView.ViewHolder(rowBinding.root) {
 
 
-        fun bind(holder: VH, position: Int) {
+        fun bind(holder: VH) {
             Log.d(javaClass.simpleName, "In post row adapter")
+            val position = getPos(this)
+
             if (viewModel.getPublicPostsSize() != 0) {
                 var auth = FirebaseAuth.getInstance()
 
@@ -53,26 +66,56 @@ class PostRowAdapter(val context: Activity, private val viewModel: MainViewModel
                 Log.d(javaClass.simpleName, "In here")
 
                 runBlocking {
-                    viewModel.retrieveSongInfo(postInfo.songId)
+//                    viewModel.retrieveSongInfo(postInfo.songId)
+                    val songInfo = viewModel.retrieveSongInfo(postInfo.songId)
                     Log.d(javaClass.simpleName, "In here")
 
-                    rowBinding.songAuthor.text = viewModel.loadedSongInfo?.value?.artist?.name
-                    rowBinding.songTitle.text = viewModel.loadedSongInfo?.value?.title
+                    rowBinding.songAuthor.text = songInfo.artist.name
+                    rowBinding.songTitle.text = songInfo.title
                     rowBinding.postUsernameTextView.text = postInfo?.ownerName
                     rowBinding.postCaption.text = postInfo.caption
 
-                    val mediaPlayer = MediaPlayer.create(
-                        context,
-                        viewModel.loadedSongInfo?.value?.preview?.toUri()
-                    )
+                    if (viewModel.getSongPlayingPos() == position) {
+                        rowBinding.musicplayerPlayButton.setImageResource(R.drawable.baseline_pause_circle_24)
+
+                    } else {
+                        rowBinding.musicplayerPlayButton.setImageResource(R.drawable.ic_play_arrow_24)
+                    }
                     rowBinding.musicplayerPlayButton.setOnClickListener {
-                        if (mediaPlayer.isPlaying) {
-                            mediaPlayer.pause()
-                            rowBinding.musicplayerPlayButton.setImageResource(R.drawable.ic_play_arrow_24)
-                        } else {
-                            mediaPlayer.start()
-                            rowBinding.musicplayerPlayButton.setImageResource(R.drawable.baseline_pause_circle_24)
-                        }
+                            // media player is playing current song so pause the song
+                        Log.d("mediaPlayer", songInfo.toString())
+                        Log.d("mediaPlayer", rowBinding.songTitle.text.toString())
+                            if (viewModel.mediaPlayer.isPlaying && viewModel.getSongPlayingPos() == position) {
+                                viewModel.mediaPlayer.pause()
+                                rowBinding.musicplayerPlayButton.setImageResource(R.drawable.ic_play_arrow_24)
+                                Log.d("mediaPlayer", " in first IF")
+                                // media player was originally playing a diff song so initialize mediaplayer with the current song
+                                // and update song index in viewModel
+                            } else if (viewModel.getSongPlayingPos() != position) {
+                                Log.d("mediaPlayer", " in ELSE IF, tyring to stop")
+                                if(viewModel.mediaPlayer.isPlaying){
+                                    viewModel.mediaPlayer.stop()
+                                }
+                                viewModel.mediaPlayer = MediaPlayer.create(
+                                    context,
+                                    songInfo.preview.toUri()
+                                )
+                                viewModel.mediaPlayer.start()
+                                val originalSongIndex = viewModel.getSongPlayingPos()
+                                rowBinding.musicplayerPlayButton.setImageResource(R.drawable.baseline_pause_circle_24)
+                                viewModel.setSongPlayingPos(position)
+
+                                if (originalSongIndex != -1) {
+                                    notifyItemChanged(originalSongIndex)
+                                }
+
+                            } else if (!viewModel.mediaPlayer.isPlaying && viewModel.getSongPlayingPos() == position){
+                                Log.d("mediaPlayer", " in 2nd ELSE IF, tyring to stop")
+
+                                viewModel.mediaPlayer.start()
+                                rowBinding.musicplayerPlayButton.setImageResource(R.drawable.baseline_pause_circle_24)
+                            }
+
                     }
 
 
@@ -150,7 +193,7 @@ class PostRowAdapter(val context: Activity, private val viewModel: MainViewModel
     }
 
     override fun onBindViewHolder(holder: VH, position: Int) {
-        holder.bind(holder, position)
+        holder.bind(holder)
     }
 }
 

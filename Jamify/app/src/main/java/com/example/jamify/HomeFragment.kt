@@ -35,7 +35,7 @@ class HomeFragment : Fragment() {
 
 
     //trying to create one media player in each frag
-    private var mediaPlayer: MediaPlayer? = null
+//    var mediaPlayer: MediaPlayer = MediaPlayer()
     private var lastPlayedIndex: Int = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -80,18 +80,18 @@ class HomeFragment : Fragment() {
 //
 //        }
 
-        myAdapter = DataAdapter(requireActivity(), viewModel) { index ->
-            if (index == lastPlayedIndex) {
-                // Toggle play/pause if the same song is clicked again
-                Log.d("mediaPlayer", "")
-                toggleMediaPlayer()
-            } else {
-                // Stop the previously playing media player, if any
-                stopMediaPlayer()
-                // Start playing the clicked media player
-                startMediaPlayer(index)
-            }
-        }
+//        myAdapter = DataAdapter(requireActivity(), viewModel) { index ->
+//            if (index == lastPlayedIndex) {
+//                // Toggle play/pause if the same song is clicked again
+//                Log.d("mediaPlayer", "")
+////                toggleMediaPlayer()
+//            } else {
+//                // Stop the previously playing media player, if any
+////                pMediaPlayer()
+//                // Start playing the clicked media player
+////                startMediaPlayer(index)
+//            }
+//        }
 
         binding.recyclerView.adapter = postRowAdapter
 
@@ -108,33 +108,33 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun startMediaPlayer(position: Int) {
-        val currentData = viewModel.getCopyOfSongInfo()?.get(position)
-        if (currentData != null) {
-            mediaPlayer = MediaPlayer.create(requireContext(), currentData.preview.toUri())
-            mediaPlayer?.start()
-            lastPlayedIndex = position
-        }
-    }
-
-    private fun stopMediaPlayer() {
-        mediaPlayer?.apply {
-            if (isPlaying) {
-                stop()
-            }
-            release()
-        }
-        mediaPlayer = null
-//        lastPlayedIndex = -1
-    }
-
-    private fun toggleMediaPlayer() {
-        mediaPlayer?.apply {
-            if (isPlaying) {
-                pause()
-            } else {
-                start()
-            }
-        }
-    }
+//    private fun startMediaPlayer(position: Int) {
+//        val currentData = viewModel.getCopyOfSongInfo()?.get(position)
+//        if (currentData != null) {
+//            mediaPlayer = MediaPlayer.create(requireContext(), currentData.preview.toUri())
+//            mediaPlayer?.start()
+//            lastPlayedIndex = position
+//        }
+//    }
+//
+//    private fun stopMediaPlayer() {
+//        mediaPlayer?.apply {
+//            if (isPlaying) {
+//                stop()
+//            }
+//            release()
+//        }
+//        mediaPlayer = null
+////        lastPlayedIndex = -1
+//    }
+//
+//    private fun toggleMediaPlayer() {
+//        mediaPlayer?.apply {
+//            if (isPlaying) {
+//                pause()
+//            } else {
+//                start()
+//            }
+//        }
+//    }
 }

@@ -4,6 +4,7 @@ import android.R
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
@@ -42,6 +43,8 @@ class ProfileFragment : Fragment() {
     //variables
     private val PICK_IMAGE_REQUEST = 1
     private var _binding: FragmentProfileBinding? = null
+//    var mediaPlayer: MediaPlayer = MediaPlayer()
+
     private val binding get() = _binding!!
     private lateinit var firebaseAuth: FirebaseAuth
 
@@ -92,7 +95,7 @@ private fun initTouchHelper(): ItemTouchHelper {
 //    private fun initAdapter(binding: FragmentRvBinding) {
     private fun initAdapter(binding: FragmentProfileBinding) {
         val rv = binding.postsRecyclerView
-        val postRowAdapter = PostRowAdapter(requireActivity(), viewModel)
+    val postRowAdapter = PostRowAdapter(requireActivity(), viewModel)
         rv.adapter = postRowAdapter
         initTouchHelper().attachToRecyclerView(rv)
 
