@@ -2,13 +2,17 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFF</color>
+    <color name="off_white">#D8D5C0</color>
+
     <color name="red">#FFA20E0E</color>
     <color name="gray">#A4A4A4</color>
     <color name="transparent_grey">#48A4A4A4</color>
-    <color name="purple">#B178C4</color>
+    <color name="purple">#CEC3D1</color>
     <color name="light_gray">#D3D3D3</color>
     <color name="logo_purple">#9704FA</color>
-    <color name="spotify_green">#1ED761</color>
+    <color name="muted_purple">#602289</color>
+
+    <color name="spotify_green">#1AAB4E</color>
     <color name="secondary_green">#7A098E39</color>
 
 </resources>

@@ -88,32 +88,7 @@ class CreateFragment : Fragment() {
 
         recyclerView.adapter = myAdapter
         recyclerView.layoutManager = LinearLayoutManager(context)
-        // populate adapter with list of songs
-//        val retrofitBuilder = Retrofit.Builder()
-//            .baseUrl("https://deezerdevs-deezer.p.rapidapi.com")
-//            .addConverterFactory(GsonConverterFactory.create())
-//            .build()
-//            .create(APIInterface::class.java)
-//
-//        val retrofitData = retrofitBuilder.getData("eminem")
-//
-//        retrofitData.enqueue(object : Callback<MyData?> {
-//            override fun onResponse(call: Call<MyData?>, response: Response<MyData?>) {
-//                val responseBody = response.body()?.data!!
-//                myAdapter = DataAdapter(activity!!, responseBody)
-//                recyclerView.adapter = myAdapter
-//                recyclerView.layoutManager = LinearLayoutManager(context)
-////                val textView = binding.response
-////                textView.text = responseBody.toString()
-//                Log.d("TAG: onResponse", "onResponse: "  + responseBody.toString())
-//
-//            }
-//
-//            override fun onFailure(call: Call<MyData?>, t: Throwable) {
-//                // if api call is failure then this method is executed
-//                Log.e("MainActivity", "onFailure: " + t.message)
-//            }
-//        })
+
         binding.image.setOnClickListener {
             openFileChooser()
         }
@@ -138,6 +113,14 @@ class CreateFragment : Fragment() {
             } else {
                 viewModel.setPrivacy(true)
             }
+        }
+
+        binding.cancel.setOnClickListener {
+            viewModel.songId.value = -1
+            viewModel.songName.value = ""
+            binding.captionText.text.clear()
+            binding.image.setImageResource(R.drawable.baseline_image_search_24)
+            findNavController().navigate(R.id.homeFragment)
         }
 
         // on pressing create, will upload image to firebase storage and will create firebase doc

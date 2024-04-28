@@ -13,7 +13,7 @@ tools:context=".CreateFragment">
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Choose a song to share."
-        android:textColor="@color/secondary_green"
+        android:textColor="@color/off_white"
         android:textSize="22sp"
         android:fontFamily="@font/circular_spotify_text_bold"
         app:layout_constraintStart_toStartOf="parent"
@@ -93,6 +93,7 @@ tools:context=".CreateFragment">
 
         android:fontFamily="@font/circular_spotify_text_light"
         android:text="No song selected"
+        android:textColor="@color/purple"
 
         ></TextView>
 
@@ -103,7 +104,7 @@ tools:context=".CreateFragment">
         app:layout_constraintTop_toBottomOf="@+id/response"
         android:text="Upload a photo."
         android:layout_margin="8dp"
-        android:textColor="@color/secondary_green"
+        android:textColor="@color/off_white"
         android:textSize="22sp"
         android:fontFamily="@font/circular_spotify_text_bold"
         android:id="@+id/imageText"
@@ -131,7 +132,7 @@ tools:context=".CreateFragment">
 
         android:text="Add a caption."
         android:id="@+id/captionTitle"
-        android:textColor="@color/secondary_green"
+        android:textColor="@color/off_white"
         android:textSize="22sp"
         android:fontFamily="@font/circular_spotify_text_bold"
         android:layout_width="match_parent"
@@ -159,30 +160,18 @@ tools:context=".CreateFragment">
         android:fontFamily="@font/circular_spotify_text_light"
 
         ></EditText>
-    <TextView
 
-        android:text="Post Visiblity"
-        android:id="@+id/visibilityTitle"
-        android:textColor="@color/secondary_green"
-        android:textSize="22sp"
-        android:fontFamily="@font/circular_spotify_text_bold"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/captionText"
-        >
-
-    </TextView>
     <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
-        app:layout_constraintTop_toBottomOf="@+id/visibilityTitle"
+        app:layout_constraintTop_toBottomOf="@+id/captionText"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_width="match_parent"
         android:orientation="horizontal"
-        android:layout_margin="2dp"
+        android:layout_marginStart="2dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="12dp"
         android:id="@+id/visibilityLayout"
         android:layout_height="wrap_content">
         <TextView
@@ -226,7 +215,7 @@ tools:context=".CreateFragment">
             android:text="Cancel"
             android:textSize="15sp"
             android:backgroundTint="@color/purple"
-            android:textColor="@color/white"
+            android:textColor="@color/muted_purple"
             android:id="@+id/cancel"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/switchPrivacy"
@@ -243,7 +232,7 @@ tools:context=".CreateFragment">
             android:text="Create"
             android:textSize="15sp"
             android:backgroundTint="@color/purple"
-            android:textColor="@color/white"
+            android:textColor="@color/muted_purple"
             android:id="@+id/create"
             app:layout_constraintStart_toEndOf="@+id/switchPrivacy"
             app:layout_constraintEnd_toEndOf="parent"
