@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.net.toUri
+import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -35,6 +36,15 @@ class DataAdapter(
         }
     }
 
+    private fun getPos(holder: RecyclerView.ViewHolder) : Int {
+        val pos = holder.bindingAdapterPosition
+        // notifyDataSetChanged was called, so position is not known
+        if( pos == RecyclerView.NO_POSITION) {
+            return holder.absoluteAdapterPosition
+        }
+        return pos
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val rowBinding = SongCardBinding.inflate(LayoutInflater.from(parent.context))
         return ViewHolder(rowBinding)
@@ -45,7 +55,63 @@ class DataAdapter(
         val rowBinding = holder.songRowBinding
 
         if (currentData != null) {
-            // Load song information
+            viewModel.observeSongPlayingPos().observe(context as LifecycleOwner) { playingPos ->
+                if (playingPos != position) {
+                    // Reset button state to play
+                    rowBinding.musicplayerPlayButton.setImageResource(R.drawable.ic_play_arrow_24)
+                }
+            }
+
+            if (viewModel.getSongPlayingPos() == position) {
+                rowBinding.musicplayerPlayButton.setImageResource(R.drawable.baseline_pause_circle_24)
+
+            } else {
+                rowBinding.musicplayerPlayButton.setImageResource(R.drawable.ic_play_arrow_24)
+            }
+            rowBinding.songTitle.text = currentData.title
+
+            rowBinding.songAuthor.text = currentData.artist.name
+                // Load song information
+            Picasso.get().load(currentData.album.cover)
+
+
+            rowBinding.musicplayerPlayButton.setOnClickListener {
+                // media player is playing current song so pause the song
+                Log.d("mediaPlayer", currentData.toString())
+                Log.d("mediaPlayer", rowBinding.songTitle.text.toString())
+                if (viewModel.mediaPlayer.isPlaying && viewModel.getSongPlayingPos() == position) {
+                    viewModel.mediaPlayer.pause()
+                    rowBinding.musicplayerPlayButton.setImageResource(R.drawable.ic_play_arrow_24)
+                    Log.d("mediaPlayer", " in first IF")
+                    // media player was originally playing a diff song so initialize mediaplayer with the current song
+                    // and update song index in viewModel
+                } else if (viewModel.getSongPlayingPos() != position) {
+                    Log.d("mediaPlayer", " in ELSE IF, tyring to stop")
+                    if(viewModel.mediaPlayer.isPlaying){
+                        viewModel.mediaPlayer.stop()
+                    }
+                    viewModel.mediaPlayer = MediaPlayer.create(
+                        context,
+                        currentData.preview.toUri()
+                    )
+                    viewModel.mediaPlayer.start()
+                    val originalSongIndex = viewModel.getSongPlayingPos()
+                    rowBinding.musicplayerPlayButton.setImageResource(R.drawable.baseline_pause_circle_24)
+                    viewModel.setSongPlayingPos(position)
+
+                    if (originalSongIndex != -1) {
+                        notifyItemChanged(originalSongIndex)
+                    }
+
+                } else if (!viewModel.mediaPlayer.isPlaying && viewModel.getSongPlayingPos() == position){
+                    Log.d("mediaPlayer", " in 2nd ELSE IF, tyring to stop")
+
+                    viewModel.mediaPlayer.start()
+                    rowBinding.musicplayerPlayButton.setImageResource(R.drawable.baseline_pause_circle_24)
+                }
+
+            }
+
             // (Assuming Picasso.get().load(currentData.album.cover) is used to load the song cover image)
 
             // Set click listener for the play/pause button

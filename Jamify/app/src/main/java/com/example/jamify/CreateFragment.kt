@@ -236,4 +236,11 @@ private fun getFileName(): String? {
         val mimeType  = context?.contentResolver?.getType(uri)
         return mimeType?.substringAfter("/") ?: ""
     }
+
+    override fun onStop() {
+        super.onStop()
+        viewModel.mediaPlayer.stop()
+        viewModel.setSongPlayingPos(-1)
+    }
+
 }
