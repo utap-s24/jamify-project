@@ -12,7 +12,7 @@ data class SongInfo(
     val explicit_content_lyrics: Int,
     val explicit_lyrics: Boolean,
     val gain: Double,
-    val id: Int,
+    val id: Long,
     val isrc: String,
     val link: String,
     val md5_image: String,
