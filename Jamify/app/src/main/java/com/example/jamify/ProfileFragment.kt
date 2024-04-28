@@ -23,6 +23,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.example.jamify.databinding.FragmentProfileBinding
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.storage.FirebaseStorage
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -122,7 +123,6 @@ class ProfileFragment : Fragment() {
 
 
         }
-
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -136,8 +136,6 @@ class ProfileFragment : Fragment() {
         // XXX Write me.
         initAdapter(binding)
         val songTitles = viewModel.extractSongTitles().toTypedArray()
-
-
 
         binding.usernameTextView.text = currentUser?.displayName
 
@@ -167,10 +165,14 @@ class ProfileFragment : Fragment() {
                 Log.d("Profile", "onNothingSelected")
             }
         }
-
-        viewModel.glideFetchPfp("${firebaseAuth.currentUser?.uid.toString()}.jpg", binding.pofilePicImageView)
+//        Log.d("pfp", "WHAT  IS THIS PFP SET TO???? PT1 ${binding.pofilePicImageView.resources}")
+//        Log.d("pfp", "Glide Fetch from Profile Frag onViewCreated")
+        loadMostRecentImage()
+//        Log.d("pfp", "WHAT  IS THIS PFP SET TO???? PT2 ${binding.pofilePicImageView.resources}")
 
         binding.pofilePicImageView.setOnClickListener {
+            Log.d("pfp", "onClick pfp change image")
+
             openFileChooser()
         }
 
@@ -188,25 +190,42 @@ class ProfileFragment : Fragment() {
         }
     }
 
+//    override fun onResume() {
+//        super.onResume()
+//        viewModel.glideFetchPfp("${firebaseAuth.currentUser?.uid.toString()}.jpg", binding.pofilePicImageView)
+//
+//    }
+
     fun getFileFromUri(context: Context, uri: Uri): File? {
         var inputStream: InputStream? = null
         var file: File? = null
         try {
             inputStream = context.contentResolver.openInputStream(uri)
             val fileName = getFileName()
+            Log.d("pfp", "getFileName() : ${fileName}")
             val fileExtension = getFileExtension(uri)
             val storageDir = context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
+            val files = storageDir?.listFiles()
+            if (files != null) {
+                for(x in files){
+                    Log.d("pfp", "printing files in app dir: ${x.name}")
+
+                }
+            }
             file = File.createTempFile(fileName, "${fileName}.jpg", storageDir)
             val outputStream = FileOutputStream(file)
             inputStream?.copyTo(outputStream)
             outputStream.close()
         } catch (e: IOException) {
             e.printStackTrace()
+            Log.d("pfp", "getFileFromURI) : FAILED TO RETRIEVED")
+
         } finally {
             inputStream?.close()
         }
         return file
     }
+
     private fun getFileName(): String? {
 //    var result: String? = null
 //    val cursor = context?.contentResolver?.query(uri, null, null, null, null)
@@ -225,18 +244,42 @@ class ProfileFragment : Fragment() {
         val mimeType  = context?.contentResolver?.getType(uri)
         return mimeType?.substringAfter("/") ?: ""
     }
+
+    private fun loadMostRecentImage() {
+        val databaseReference = FirebaseStorage.getInstance().reference
+        val recentImageRef = databaseReference.child("pfps").child("${firebaseAuth.currentUser?.uid.toString()}.jpg")
+
+        recentImageRef.downloadUrl.addOnSuccessListener { uri ->
+            viewModel.glideFetchPfp(uri.toString(), binding.pofilePicImageView)
+        }
+
+    }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null && data.data != null) {
 
-            val uri = data?.data // Get the URI of the selected file
-            val file = getFileFromUri(requireContext(), uri!!)
-            if (file != null) {
-                viewModel.setProfileImageFile(file)
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null && data.data != null) {
+            Log.d("pfp", "onActivityResult data = ${data.data}")
+
+            val uri = data.data // Get the URI of the selected file
+            Log.d("pfp", "URI: $uri")
+            if (uri != null) {
+                viewModel.uploadImageToFirebase(requireContext(), uri, binding.pofilePicImageView)
+                Log.d("pfp", "we've uploaded the image, setting set profile photo editting = true")
+//                binding.pofilePicImageView.setImageURI(uri)
+                viewModel.setProfilePhotoUpdating(true)
             }
-            binding.pofilePicImageView.setImageURI(uri)
-            viewModel.setSelectedProfileImage(uri)
-            viewModel.pfpSuccess(firebaseAuth.currentUser?.uid.toString())
+
+//            val file = getFileFromUri(requireContext(), uri!!)
+//            Log.d("pfp", "onActivityResult getFileName() : ${file?.name}")
+//
+//            if (file != null) {
+//                viewModel.setProfileImageFile(file)
+//            }
+////            binding.pofilePicImageView.setImageURI(uri)
+//            viewModel.setSelectedProfileImage(uri)
+//            viewModel.pfpSuccess(firebaseAuth.currentUser?.uid.toString())
+//            viewModel.glideFetchPfp(firebaseAuth.currentUser?.uid.toString(), binding.pofilePicImageView)
+//        }
         }
     }
 

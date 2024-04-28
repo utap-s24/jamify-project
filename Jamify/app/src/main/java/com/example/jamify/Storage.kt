@@ -88,10 +88,10 @@ class Storage () {
         // Delete the file
         photoStorage.child(pictureUUID).delete()
             .addOnSuccessListener {
-                Log.d(javaClass.simpleName, "Deleted $pictureUUID")
+                Log.d("pfp", "Deleted $pictureUUID")
             }
             .addOnFailureListener {
-                Log.d(javaClass.simpleName, "Delete FAILED of $pictureUUID")
+                Log.d("pfp", "Delete FAILED of $pictureUUID")
             }
     }
     fun listAllImages(listSuccess:(List<String>)->Unit) {

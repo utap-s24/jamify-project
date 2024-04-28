@@ -1,5 +1,6 @@
 package com.example.jamify
 
+import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 
@@ -17,12 +18,13 @@ import com.example.jamify.glide.GlideApp
 import com.example.jamify.model.PostMeta
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.File
-
+import java.util.UUID
 
 
 data class SortInfo(val ascending: Boolean)
@@ -37,13 +39,14 @@ class MainViewModel  : ViewModel() {
     private var auth =  FirebaseAuth.getInstance()
 
     // Firestore state
-    private val storage = Storage()
+    private var storage = Storage()
     // Database access
     private val dbHelp = ViewModelDBHelper()
     // LiveData for entire note list, all images
 
     // LiveData for entire posts list, all public posts
     private var postList = MutableLiveData<List<PostMeta>>()
+    private var profilePhotoUpdating = MutableLiveData<Boolean>().apply { this.value = false }
     private var postsEmpty = MediatorLiveData<Boolean>().apply {
         addSource(postList) {
             this.value = it.isNullOrEmpty()
@@ -63,6 +66,8 @@ class MainViewModel  : ViewModel() {
             }
         }
     }
+
+
 
     private var filteredUserPosts = MediatorLiveData<List<PostMeta>>().apply{
         // XXX Write me, viewModelScope.launch getSubreddits()
@@ -292,6 +297,17 @@ class MainViewModel  : ViewModel() {
     fun observeFilteredUserPosts(): LiveData<List<PostMeta>> {
         return filteredUserPosts
     }
+
+    fun observeProfilePhotoUpdating(): LiveData<Boolean> {
+        return profilePhotoUpdating
+    }
+
+    fun setProfilePhotoUpdating(updating: Boolean){
+        profilePhotoUpdating.value = updating
+        Log.d("pfp", "updating = true")
+
+    }
+
     fun setPrivacy(private: Boolean) {
         // XXX Write me
         postPrivacy.value = private
@@ -322,6 +338,7 @@ class MainViewModel  : ViewModel() {
     }
 
     fun setProfileImageFile(file: File) {
+        Log.d("pfp", "file name: ${file.name}" )
         profileImageFile.value = file
     }
 
@@ -424,16 +441,39 @@ class MainViewModel  : ViewModel() {
         Glide.fetch(storage.uuid2StorageReference(pictureUUID),
             imageView)
     }
-    fun glideFetchPfp(pictureUUID: String, imageView: ImageView) {
-//        Glide.fetch(storage.pfpUuid2StorageReference(pictureUUID),
-//            imageView)
-        GlideApp.with(imageView.context) // Use the context to initialize Glide
-            .load(storage.pfpUuid2StorageReference(pictureUUID))
-            .error(R.drawable.baseline_person_24) // Set the error drawable here
-            .into(imageView)
+    fun glideFetchPfp(uri: String, imageView: ImageView) {
+        Glide.fetchProfile(uri,
+            imageView)
+        profilePhotoUpdating.value = false
+//        GlideApp.with(imageView.context) // Use the context to initialize Glide
+//            .load(storage.pfpUuid2StorageReference(pictureUUID))
+//            .error(R.drawable.baseline_account_circle_24) // Set the error drawable here
+//            .into(imageView)
     }
 
     /////////////////////////////////////////////////////////////
     // Create Post Dat
+    fun uploadImageToFirebase(context: Context, imageUri: Uri, imageView: ImageView) {
+        val storage = FirebaseStorage.getInstance()
+        val storageRef = storage.reference
+        val imagesRef = storageRef.child("pfps/${auth.currentUser?.uid.toString()}.jpg")
 
+        imagesRef.putFile(imageUri)
+            .addOnSuccessListener { taskSnapshot ->
+                // Image uploaded successfully
+                // You can get the download URL of the image
+                taskSnapshot.storage.downloadUrl.addOnSuccessListener { uri ->
+                    imageView.setImageURI(imageUri)
+                    // Now you can use the download URL as needed
+                }.addOnFailureListener {
+                    // Handle any errors getting the download URL
+                    imageView.setImageResource(R.drawable.baseline_account_circle_24)
+
+                }
+            }
+            .addOnFailureListener { exception ->
+                // Handle unsuccessful uploads
+                imageView.setImageResource(R.drawable.baseline_account_circle_24)
+            }
+    }
 }

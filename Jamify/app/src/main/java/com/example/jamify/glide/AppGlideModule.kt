@@ -6,11 +6,14 @@ import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.Registry
 import com.bumptech.glide.annotation.GlideModule
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.module.AppGlideModule
 import com.bumptech.glide.request.RequestOptions
+import com.example.jamify.R
 import com.firebase.ui.storage.images.FirebaseImageLoader
 import com.google.firebase.storage.StorageReference
+import retrofit2.http.Url
 import java.io.InputStream
 
 @GlideModule
@@ -41,7 +44,25 @@ object Glide {
             .asBitmap() // Try to display animated Gifs and video still
             .load(storageReference)
             .apply(glideOptions)
-            .error(android.R.color.holo_red_dark)
+            .diskCacheStrategy(DiskCacheStrategy.NONE)
+//            .skipMemoryCache(true)
+            .error(R.drawable.baseline_account_circle_24) // Set the error drawable here
+            .override(width, height)
+            .into(imageView)
+    }
+
+    fun fetchProfile(downloadURL: String, imageView: ImageView) {
+        // Layout engine does not know size of imageView
+        // Hardcoding this here is a bad idea.  What would be better?
+        val width = 400
+        val height = 400
+        GlideApp.with(imageView.context)
+            .asBitmap() // Try to display animated Gifs and video still
+            .load(downloadURL)
+            .apply(glideOptions)
+            .diskCacheStrategy(DiskCacheStrategy.NONE)
+//            .skipMemoryCache(true)
+            .error(R.drawable.baseline_account_circle_24) // Set the error drawable here
             .override(width, height)
             .into(imageView)
     }
