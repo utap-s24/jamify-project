@@ -83,6 +83,46 @@ class PostRowAdapter(val context: Activity, private val viewModel: MainViewModel
                     }
 
                     loadMostRecentImage(postInfo.ownerUid, rowBinding)
+
+                    // check if user's UID is in the array of likes
+                    if (postInfo.likes.contains(auth.currentUser?.uid)) {
+                        rowBinding.postLikeButton.setImageResource(R.drawable.round_favorite_24)
+
+                    } else {
+                        rowBinding.postLikeButton.setImageResource(R.drawable.heart_button)
+
+                    }
+
+                    rowBinding.postLikesCountTextView.text = postInfo.likes.size.toString()
+
+                    rowBinding.postLikeButton.setOnClickListener {
+                        Log.d("likes listener", "likes array for ${postInfo.firestoreID} is : ${postInfo.likes}")
+
+                        var liked = postInfo.likes.contains(auth.currentUser?.uid)
+                        Log.d("likes", "user liked post: $liked ")
+
+                        if (liked) {
+                            // remove user from list of likes
+                            viewModel.updateLikesInPost(postInfo.firestoreID, auth.currentUser?.uid!!, false) {
+                                rowBinding.postLikeButton.setImageResource(R.drawable.heart_button)
+                                Log.d(
+                                    "remove like",
+                                    "after removing likes array for ${postInfo.firestoreID} is : ${postInfo.likes}"
+                                )
+                                notifyItemChanged(position)
+                            }
+
+                        } else {
+
+                            viewModel.updateLikesInPost(postInfo.firestoreID, auth.currentUser?.uid!!, true){
+                                rowBinding.postLikeButton.setImageResource(R.drawable.round_favorite_24)
+                                Log.d("add like", "after adding likes array for ${postInfo.firestoreID} is : ${postInfo.likes}")
+                                notifyItemChanged(position)
+                            }
+                        }
+                    }
+
+                    // updateLikes(postId: String, userId: String, addLike: Boolean, callback:()->Unit = {})
                     // get song information
 
 //                rowBinding.songAuthor.text = songInfo?.artist?.name

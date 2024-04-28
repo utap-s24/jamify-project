@@ -14,14 +14,13 @@ data class PostMeta(
     // Auth information
     var ownerName: String = "",
     var ownerUid: String = "",
-    val postId: String = "",        //ik we have photouuid for storage, should we
-                                    //use a id for the post meta too?
     var photoUuid : String = "",
     var songTitle : String = "",
     var byteSize : Long = 0L,
     var caption: String = "",
     var songId : Long = 0L,
     val displayName : String = "",
+    var likes : List<String> = emptyList(),
     val private: Boolean = false,
     // Written on the server
     @ServerTimestamp val timeStamp: Timestamp? = null,

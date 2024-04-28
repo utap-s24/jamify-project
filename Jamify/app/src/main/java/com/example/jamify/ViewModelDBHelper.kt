@@ -3,6 +3,7 @@ package com.example.jamify
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.example.jamify.model.PostMeta
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 
@@ -15,7 +16,38 @@ class ViewModelDBHelper() {
             return string
         return string.substring(0..9) + "..."
     }
+    fun updateLikes(userId: String, addLike : Boolean, postId: String, callback:()->Unit = {}) {
+        Log.d("likes", addLike.toString())
 
+        val postRef = db.collection(collectionRoot).document(postId)
+        // Update the list of users who liked the post
+        if (addLike) {
+            postRef.update("likes", FieldValue.arrayUnion(userId))
+                .addOnSuccessListener {
+                    // Liked successfully
+                    Log.d("likes", "add ${userId} to list of likes")
+
+                    callback()
+                }
+                .addOnFailureListener { e ->
+                    // Handle any errors
+                    Log.d("likes", "FAILED to add ${userId} to list of likes")
+                    callback()
+                }
+        } else {
+            postRef.update("likes", FieldValue.arrayRemove(userId))
+                .addOnSuccessListener {
+                    // Liked successfully
+                    Log.d("likes", "remove ${userId} to list of likes")
+                    callback()
+                }
+                .addOnFailureListener { e ->
+                    // Handle any errors
+                    Log.d("likes", "FAILED to remove ${userId} to list of likes")
+                    callback()
+                }
+        }
+    }
     fun fetchInitialNotes(notesList: MutableLiveData<List<PostMeta>>,
                           sortInfo: SortInfo,
                           callback:()->Unit) {

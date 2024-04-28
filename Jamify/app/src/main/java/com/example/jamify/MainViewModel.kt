@@ -213,6 +213,25 @@ class MainViewModel  : ViewModel() {
 
     }
 
+    fun updateLikesInPost(postId: String, userId: String, liked: Boolean, callback:()->Unit = {}) {
+        dbHelp.updateLikes(userId, liked, postId, callback)
+        val postIndex = postList.value?.indexOfFirst { it.firestoreID == postId }
+        postIndex?.let { index ->
+            val updatedPost = postList.value?.get(index)?.copy(
+                likes = if (liked) {
+                    postList.value?.get(index)?.likes?.plus(userId)
+                } else {
+                    postList.value?.get(index)?.likes?.minus(userId)
+                } ?: emptyList()
+            )
+            updatedPost?.let {
+                val updatedPostList = postList.value!!.toMutableList()
+                updatedPostList[index]= updatedPost
+                postList.value = updatedPostList
+            }
+        }
+    }
+
     private fun filterPostsList():List<PostMeta>? {
         if (filterSongTitle.value == "---") return userPosts.value
 //        removeAllCurrentSpans()
@@ -475,5 +494,15 @@ class MainViewModel  : ViewModel() {
                 // Handle unsuccessful uploads
                 imageView.setImageResource(R.drawable.baseline_account_circle_24)
             }
+    }
+
+
+
+
+    // Define a function to update the list of users who liked a post
+    fun updateLikes(postId: String, userId: String, addLike: Boolean, callback:()->Unit = {}) {
+        // Reference to the post document
+            // .collection("posts").document(postId)
+        dbHelp.updateLikes(userId, addLike, postId, callback)
     }
 }

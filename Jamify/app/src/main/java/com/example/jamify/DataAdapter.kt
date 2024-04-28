@@ -49,11 +49,6 @@ class DataAdapter(val context: Activity,
                 viewModel.selectedIndex = bindingAdapterPosition
 
                 clickListener(bindingAdapterPosition)
-
-
-
-
-
             }
 
         }
