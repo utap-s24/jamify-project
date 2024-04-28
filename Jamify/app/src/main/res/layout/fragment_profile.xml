@@ -54,13 +54,14 @@
 
         <TextView
             android:id="@+id/usernameTextView"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:textColor="@color/purple"
             android:text="john doe"
             android:textSize="50sp"
             android:fontFamily="@font/circular_spotify_text_bold"
+            app:layout_constraintEnd_toEndOf="@+id/ProfileUsernameMeta"
             app:layout_constraintStart_toEndOf="@id/pofilePicImageView"
             app:layout_constraintTop_toTopOf="@id/pofilePicImageView"
             app:layout_constraintBottom_toBottomOf="@id/pofilePicImageView"
@@ -211,5 +212,8 @@
         app:spanCount="2"
         android:layout_gravity="center"
         />
+
+<!--    app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"-->
+
 
 </LinearLayout>

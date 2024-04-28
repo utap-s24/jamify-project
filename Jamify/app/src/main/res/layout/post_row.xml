@@ -115,17 +115,17 @@
 
         <TextView
             android:id="@+id/postUsernameTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="35dp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="3dp"
             android:fontFamily="@font/circular_spotify_text_light"
             android:text="john doe"
             android:textColor="@color/white"
             android:textSize="15sp"
-            android:paddingTop="7dp"
-            android:textAlignment="center"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toEndOf="@id/postUserPhoto"
+            app:layout_constraintEnd_toStartOf="@id/postLikesCountTextView"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
