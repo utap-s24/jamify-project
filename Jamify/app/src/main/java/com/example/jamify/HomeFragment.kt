@@ -1,5 +1,6 @@
 package com.example.jamify
 
+import android.media.MediaPlayer
 import androidx.fragment.app.viewModels
 import android.os.Bundle
 import android.util.Log
@@ -14,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.jamify.com.example.jamify.DataAdapter
 import com.example.jamify.databinding.FragmentCreateBinding
 import com.example.jamify.databinding.FragmentHomeBinding
+import androidx.core.net.toUri
 
 class HomeFragment : Fragment() {
 
@@ -31,6 +33,10 @@ class HomeFragment : Fragment() {
     // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
 
+
+    //trying to create one media player in each frag
+    private var mediaPlayer: MediaPlayer? = null
+    private var lastPlayedIndex: Int = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,6 +79,20 @@ class HomeFragment : Fragment() {
 //
 //
 //        }
+
+        myAdapter = DataAdapter(requireActivity(), viewModel) { index ->
+            if (index == lastPlayedIndex) {
+                // Toggle play/pause if the same song is clicked again
+                Log.d("mediaPlayer", "")
+                toggleMediaPlayer()
+            } else {
+                // Stop the previously playing media player, if any
+                stopMediaPlayer()
+                // Start playing the clicked media player
+                startMediaPlayer(index)
+            }
+        }
+
         binding.recyclerView.adapter = postRowAdapter
 
         Log.d(javaClass.simpleName, "notifyDataSetChanged")
@@ -86,8 +106,35 @@ class HomeFragment : Fragment() {
         viewModel.observePublicPosts().observe(viewLifecycleOwner) {
            postRowAdapter.submitList(it)
         }
+    }
 
+    private fun startMediaPlayer(position: Int) {
+        val currentData = viewModel.getCopyOfSongInfo()?.get(position)
+        if (currentData != null) {
+            mediaPlayer = MediaPlayer.create(requireContext(), currentData.preview.toUri())
+            mediaPlayer?.start()
+            lastPlayedIndex = position
+        }
+    }
 
+    private fun stopMediaPlayer() {
+        mediaPlayer?.apply {
+            if (isPlaying) {
+                stop()
+            }
+            release()
+        }
+        mediaPlayer = null
+//        lastPlayedIndex = -1
+    }
 
+    private fun toggleMediaPlayer() {
+        mediaPlayer?.apply {
+            if (isPlaying) {
+                pause()
+            } else {
+                start()
+            }
+        }
     }
 }

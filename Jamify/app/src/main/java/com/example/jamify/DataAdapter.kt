@@ -18,96 +18,137 @@ import com.example.jamify.databinding.SongCardBinding
 import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
 
-// Pass in a function called clickListener that takes a view and a songName
-// as parameters.  Call clickListener when the row is clicked.
-class DataAdapter(val context: Activity,
-                    private val viewModel: MainViewModel,
-                    private val clickListener: (songIndex: Int) -> Unit
-)
-// https://developer.android.com/reference/androidx/recyclerview/widget/ListAdapter
-// Slick adapter that provides submitList, so you don't worry about how to update
-// the list, you just submit a new one when you want to change the list and the
-// Diff class computes the smallest set of changes that need to happen.
-// NB: Both the old and new lists must both be in memory at the same time.
-// So you can copy the old list, change it into a new list, then submit the new list.
-    : ListAdapter<Data,
-        DataAdapter.ViewHolder>(Diff())
-{
-    companion object {
-        val TAG = "RVDiffAdapter"
-    }
+class DataAdapter(
+    val context: Activity,
+    private val viewModel: MainViewModel,
+    private val clickListener: (songIndex: Int) -> Unit
+) : ListAdapter<Data, DataAdapter.ViewHolder>(Diff()) {
 
-    // ViewHolder pattern holds row binding
-    inner class ViewHolder(val songRowBinding : SongCardBinding)
-        : RecyclerView.ViewHolder(songRowBinding.root) {
+    inner class ViewHolder(val songRowBinding: SongCardBinding) :
+        RecyclerView.ViewHolder(songRowBinding.root) {
+
         init {
-            //XXX Write me.
-            itemView.setOnClickListener {
-                // TODO: not sure about this either
-                var prevSongSelected = viewModel.selectedIndex
-//                viewModel.selectedIndex = bindingAdapterPosition
-                viewModel.selectedIndex = bindingAdapterPosition
-
+            // Click listener for the play button
+            songRowBinding.musicplayerPlayButton.setOnClickListener {
                 clickListener(bindingAdapterPosition)
             }
-
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        //XXX Write me.
         val rowBinding = SongCardBinding.inflate(LayoutInflater.from(parent.context))
         return ViewHolder(rowBinding)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        //XXX Write me.
-//        holder.
-//        holder.itemView.setOnClickListener {
-//            clickListener(position)
-//        }
-
-
         val currentData = viewModel.getCopyOfSongInfo()?.get(position)
-
-
-        // dependency used to load image
-
         val rowBinding = holder.songRowBinding
 
-
         if (currentData != null) {
-            Picasso.get().load(currentData.album.cover).into(rowBinding.musicImage)
+            // Load song information
+            // (Assuming Picasso.get().load(currentData.album.cover) is used to load the song cover image)
 
-            rowBinding.songAuthor.text = currentData.artist?.name
-            rowBinding.songTitle.text = currentData?.title
-
-            val mediaPlayer = MediaPlayer.create(
-                context,
-                currentData.preview.toUri()
-            )
-            rowBinding.musicplayerPlayButton.setOnClickListener {
-                if (mediaPlayer.isPlaying) {
-                    mediaPlayer.pause()
-                    rowBinding.musicplayerPlayButton.setImageResource(R.drawable.ic_play_arrow_24)
-                } else {
-                    mediaPlayer.start()
-                    rowBinding.musicplayerPlayButton.setImageResource(R.drawable.baseline_pause_circle_24)
-                }
-            }
-
+            // Set click listener for the play/pause button
+            // holder.toggleMediaPlayer()
         }
     }
 
     class Diff : DiffUtil.ItemCallback<Data>() {
-        // Item identity
         override fun areItemsTheSame(oldItem: Data, newItem: Data): Boolean {
             return oldItem.id == newItem.id
         }
-        // Item contents are the same, but the object might have changed
+
         override fun areContentsTheSame(oldItem: Data, newItem: Data): Boolean {
             return oldItem.title == newItem.title
         }
     }
 }
-
+//class DataAdapter(
+//    val context: Activity,
+//    private val viewModel: MainViewModel,
+//    private val clickListener: (songIndex: Int) -> Unit
+//) : ListAdapter<Data, DataAdapter.ViewHolder>(Diff()) {
+//
+//    private var mediaPlayer: MediaPlayer? = null
+//    private var lastPlayedPosition: Int = -1
+//
+//    inner class ViewHolder(val songRowBinding: SongCardBinding) :
+//        RecyclerView.ViewHolder(songRowBinding.root) {
+//
+//        init {
+//            // Click listener for the play button
+//            songRowBinding.musicplayerPlayButton.setOnClickListener {
+//                val currentPosition = bindingAdapterPosition
+//                if (currentPosition == lastPlayedPosition) {
+//                    // Toggle play/pause if the same song is clicked again
+//                    toggleMediaPlayer()
+//                } else {
+//                    // Stop the previously playing media player, if any
+//                    stopMediaPlayer()
+//                    // Start playing the clicked media player
+//                    startMediaPlayer(currentPosition)
+//                }
+//            }
+//        }
+//    }
+//
+//    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+//        val rowBinding = SongCardBinding.inflate(LayoutInflater.from(parent.context))
+//        return ViewHolder(rowBinding)
+//    }
+//
+//    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+//        val currentData = viewModel.getCopyOfSongInfo()?.get(position)
+//        val rowBinding = holder.songRowBinding
+//
+//        if (currentData != null) {
+//            // Load song information
+//            // (Assuming Picasso.get().load(currentData.album.cover) is used to load the song cover image)
+//
+//            // Set click listener for the play/pause button
+//            rowBinding.musicplayerPlayButton.setOnClickListener {
+//                toggleMediaPlayer()
+//            }
+//        }
+//    }
+//
+//    private fun startMediaPlayer(position: Int) {
+//        val currentData = viewModel.getCopyOfSongInfo()?.get(position)
+//        if (currentData != null) {
+//            mediaPlayer = MediaPlayer.create(context, currentData.preview.toUri())
+//            mediaPlayer?.start()
+//            lastPlayedPosition = position
+//        }
+//    }
+//
+//    private fun stopMediaPlayer() {
+//        mediaPlayer?.apply {
+//            if (isPlaying) {
+//                stop()
+//                release()
+//            }
+//        }
+//        mediaPlayer = null
+//        lastPlayedPosition = -1
+//    }
+//
+//    private fun toggleMediaPlayer() {
+//        if (mediaPlayer != null) {
+//            if (mediaPlayer?.isPlaying == true) {
+//                mediaPlayer?.pause()
+//            } else {
+//                mediaPlayer?.start()
+//            }
+//        }
+//    }
+//
+//    class Diff : DiffUtil.ItemCallback<Data>() {
+//        override fun areItemsTheSame(oldItem: Data, newItem: Data): Boolean {
+//            return oldItem.id == newItem.id
+//        }
+//
+//        override fun areContentsTheSame(oldItem: Data, newItem: Data): Boolean {
+//            return oldItem.title == newItem.title
+//        }
+//    }
+//}
