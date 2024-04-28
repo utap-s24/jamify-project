@@ -19,7 +19,6 @@ data class PostMeta(
     var byteSize : Long = 0L,
     var caption: String = "",
     var songId : Long = 0L,
-    val displayName : String = "",
     var likes : List<String> = emptyList(),
     val private: Boolean = false,
     // Written on the server
