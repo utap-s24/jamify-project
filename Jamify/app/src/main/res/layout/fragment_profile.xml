@@ -4,32 +4,32 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".ProfileActivity"
+    tools:context=".ProfileFragment"
     android:layout_margin="8dp"
     android:orientation="vertical">
 
-<!--    <LinearLayout-->
-<!--        android:id="@+id/signOutSection"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:orientation="horizontal"-->
-<!--        android:layout_margin="8dp">-->
-<!--        <Button-->
-<!--            -->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:text="LOG OUT"/>-->
+    <!--    <LinearLayout-->
+    <!--        android:id="@+id/signOutSection"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:orientation="horizontal"-->
+    <!--        android:layout_margin="8dp">-->
+    <!--        <Button-->
+    <!--            -->
+    <!--            android:layout_width="match_parent"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:text="LOG OUT"/>-->
 
-<!--    </LinearLayout>-->
+    <!--    </LinearLayout>-->
 
-<androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/ProfileUsernameMeta"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_margin="8dp">
-<!--        Elevation = reletive depth btw 2 surfaces-->
-<!--        android:elevation="6dp"-->
+        <!--        Elevation = reletive depth btw 2 surfaces-->
+        <!--        android:elevation="6dp"-->
 
         <Button
             android:id="@+id/logoutButton"
@@ -37,8 +37,10 @@
             android:layout_height="wrap_content"
             android:text="LOG OUT"
             app:layout_constraintTop_toTopOf="parent"
-        />
+            android:background="@drawable/rounded_oval"
+            />
         <com.google.android.material.imageview.ShapeableImageView
+            android:layout_marginTop="7dp"
             android:id="@+id/pofilePicImageView"
             android:layout_width="100dp"
             android:layout_height="100dp"
@@ -76,14 +78,27 @@
 
         <!-- Posts count -->
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/postCountLayout"
             android:orientation="vertical"
-            android:gravity="center"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/filterPostsLayout"
             app:layout_constraintTop_toTopOf="parent"
-            >
+            app:layout_constraintVertical_bias="0.5">
+
+            <TextView
+                android:id="@+id/postsText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/circular_spotify_text_light"
+                android:text="Posts"
+                android:textSize="15sp"
+                android:textColor="@color/off_white"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.5" />
+
             <TextView
                 android:id="@+id/postsCountTextView"
                 android:layout_width="0dp"
@@ -92,21 +107,15 @@
                 android:text=""
                 android:textSize="25sp"
                 android:textAlignment="center"
+                android:textColor="@color/purple"
                 android:gravity="center"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/postsText"
+                app:layout_constraintVertical_bias="0.5" />
 
             <!-- Posts text -->
-            <TextView
-                android:id="@+id/postsText"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/circular_spotify_text_light"
-                android:text="Posts"
-                android:textSize="15sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/postsCountTextView"/>
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -139,6 +148,7 @@
                 android:layout_width="120dp"
                 android:layout_height="wrap_content"
                 android:entries="@array/sort_options"
+
                 android:textSize="25sp"
                 android:textStyle="bold"
                 android:ellipsize="end"

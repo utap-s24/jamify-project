@@ -44,21 +44,21 @@
         app:cardCornerRadius="30dp"
         app:layout_constraintBottom_toBottomOf="parent">
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottonnav"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:menu="@menu/bottom_app_bar"
-        android:background="@color/black"
-        app:itemIconTint="@drawable/bottom_nav_item_colors"
-        app:itemTextColor="@drawable/bottom_nav_item_colors"
-        android:layout_alignParentBottom="true"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nav_host_fragment"
-        >
-    </com.google.android.material.bottomnavigation.BottomNavigationView>
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/bottonnav"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:menu="@menu/bottom_app_bar"
+            android:background="@color/black"
+            app:itemIconTint="@drawable/bottom_nav_item_colors"
+            app:itemTextColor="@drawable/bottom_nav_item_colors"
+            android:layout_alignParentBottom="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/nav_host_fragment"
+            >
+        </com.google.android.material.bottomnavigation.BottomNavigationView>
     </androidx.cardview.widget.CardView>
 
 
