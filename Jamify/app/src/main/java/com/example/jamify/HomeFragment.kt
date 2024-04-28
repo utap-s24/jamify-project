@@ -66,32 +66,6 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         Log.d(javaClass.simpleName, "onViewCreated")
         val postRowAdapter = PostRowAdapter(requireActivity(), viewModel)
-//        {
-//            Log.d("OnePost",
-//                String.format("OnePost title %s",
-//                    if (it.title.length > 32)
-//                        it.title.substring(0, 31) + "..."
-//                    else it.title))
-//            Log.d("doOnePost", "image ${it.imageURL}")
-//            // XXX Write me
-//            val action = HomeFragmentDirections.actionHomeFragmentToOnePostFragment(it)
-//            findNavController().navigate(action)
-//
-//
-//        }
-
-//        myAdapter = DataAdapter(requireActivity(), viewModel) { index ->
-//            if (index == lastPlayedIndex) {
-//                // Toggle play/pause if the same song is clicked again
-//                Log.d("mediaPlayer", "")
-////                toggleMediaPlayer()
-//            } else {
-//                // Stop the previously playing media player, if any
-////                pMediaPlayer()
-//                // Start playing the clicked media player
-////                startMediaPlayer(index)
-//            }
-//        }
 
         binding.recyclerView.adapter = postRowAdapter
 
@@ -108,33 +82,14 @@ class HomeFragment : Fragment() {
         }
     }
 
-//    private fun startMediaPlayer(position: Int) {
-//        val currentData = viewModel.getCopyOfSongInfo()?.get(position)
-//        if (currentData != null) {
-//            mediaPlayer = MediaPlayer.create(requireContext(), currentData.preview.toUri())
-//            mediaPlayer?.start()
-//            lastPlayedIndex = position
-//        }
-//    }
-//
-//    private fun stopMediaPlayer() {
-//        mediaPlayer?.apply {
-//            if (isPlaying) {
-//                stop()
-//            }
-//            release()
-//        }
-//        mediaPlayer = null
-////        lastPlayedIndex = -1
-//    }
-//
-//    private fun toggleMediaPlayer() {
-//        mediaPlayer?.apply {
-//            if (isPlaying) {
-//                pause()
-//            } else {
-//                start()
-//            }
-//        }
-//    }
+
+
+    override fun onStop() {
+        super.onStop()
+        viewModel.mediaPlayer.stop()
+//        recyclerView.adapter?.notifyDataSetChanged()
+//        viewModel.mediaPlayer = null
+        viewModel.setSongPlayingPos(-1)
+
+    }
 }

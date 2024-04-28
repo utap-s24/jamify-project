@@ -259,22 +259,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application){
         val id = postList.value?.get(position)?.firestoreID ?: ""
         return expandedMap[id] == true
     }
-//    fun isExpandable(position: Int) : Boolean {
-//        return postList.value?.get(position)?.photoUuid?.isNotEmpty() ?: false
-//    }
-//    fun toggleExpanded(position: Int) {
-//        if( isExpandable(position) ) {
-//            val id = postList.value?.get(position)?.firestoreID ?: ""
-//            expandedMap[id] = expandedMap[id] != true
-//        }
-//    }
-    // MainActivity gets updates on this via live data and informs view model
-//    fun setCurrentAuthUser(user: User) {
-//      Log.d(javaClass.simpleName, "auth user being updated in view model")
-//    Log.d(javaClass.simpleName, user.uid)
-//
-//        currentAuthUser = user
-//    }
+
     fun getCurrentAuthUser(): FirebaseUser? {
         return auth.currentUser
     }
@@ -477,10 +462,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application){
         Glide.fetchProfile(uri,
             imageView)
         profilePhotoUpdating.value = false
-//        GlideApp.with(imageView.context) // Use the context to initialize Glide
-//            .load(storage.pfpUuid2StorageReference(pictureUUID))
-//            .error(R.drawable.baseline_account_circle_24) // Set the error drawable here
-//            .into(imageView)
     }
 
     /////////////////////////////////////////////////////////////
@@ -507,15 +488,5 @@ class MainViewModel(application: Application) : AndroidViewModel(application){
                 // Handle unsuccessful uploads
                 imageView.setImageResource(R.drawable.baseline_account_circle_24)
             }
-    }
-
-
-
-
-    // Define a function to update the list of users who liked a post
-    fun updateLikes(postId: String, userId: String, addLike: Boolean, callback:()->Unit = {}) {
-        // Reference to the post document
-            // .collection("posts").document(postId)
-        dbHelp.updateLikes(userId, addLike, postId, callback)
     }
 }

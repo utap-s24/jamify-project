@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.net.toUri
+import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -64,6 +65,14 @@ class PostRowAdapter(val context: Activity, private val viewModel: MainViewModel
 
                 val postInfo = getItem(position)
                 Log.d(javaClass.simpleName, "In here")
+
+                    viewModel.observeSongPlayingPos().observe(context as LifecycleOwner) { playingPos ->
+                        if (playingPos != position) {
+                            // Reset button state to play
+                            holder.rowBinding.musicplayerPlayButton.setImageResource(R.drawable.ic_play_arrow_24)
+                        }
+                    }
+
 
                 runBlocking {
 //                    viewModel.retrieveSongInfo(postInfo.songId)
@@ -164,14 +173,6 @@ class PostRowAdapter(val context: Activity, private val viewModel: MainViewModel
                             }
                         }
                     }
-
-                    // updateLikes(postId: String, userId: String, addLike: Boolean, callback:()->Unit = {})
-                    // get song information
-
-//                rowBinding.songAuthor.text = songInfo?.artist?.name
-//                rowBinding.playerTimeRemainingText.text = toMinutesAndSeconds(songInfo?.duration!!)
-
-
                 }
             }
         }

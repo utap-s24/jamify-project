@@ -262,17 +262,6 @@ private fun initTouchHelper(): ItemTouchHelper {
     }
 
     private fun getFileName(): String? {
-//    var result: String? = null
-//    val cursor = context?.contentResolver?.query(uri, null, null, null, null)
-//        cursor?.use {
-//        if (cursor.moveToFirst()) {
-//            val nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
-//            result = cursor.getString(nameIndex)
-//        }
-//    }
-//    private fun generateFileName(): String {
-//        return UUID.randomUUID().toString()
-
         return firebaseAuth.currentUser?.uid!!
     }
     fun getFileExtension(uri: Uri) : String {
@@ -304,19 +293,12 @@ private fun initTouchHelper(): ItemTouchHelper {
                 viewModel.setProfilePhotoUpdating(true)
             }
 
-//            val file = getFileFromUri(requireContext(), uri!!)
-//            Log.d("pfp", "onActivityResult getFileName() : ${file?.name}")
-//
-//            if (file != null) {
-//                viewModel.setProfileImageFile(file)
-//            }
-////            binding.pofilePicImageView.setImageURI(uri)
-//            viewModel.setSelectedProfileImage(uri)
-//            viewModel.pfpSuccess(firebaseAuth.currentUser?.uid.toString())
-//            viewModel.glideFetchPfp(firebaseAuth.currentUser?.uid.toString(), binding.pofilePicImageView)
-//        }
         }
     }
-
+    override fun onStop() {
+        super.onStop()
+        viewModel.mediaPlayer.stop()
+        viewModel.setSongPlayingPos(-1)
+    }
 
 }
