@@ -21,6 +21,8 @@ import androidx.core.net.toUri
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
 import com.example.jamify.databinding.FragmentProfileBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
@@ -59,12 +61,42 @@ class ProfileFragment : Fragment() {
         firebaseAuth = FirebaseAuth.getInstance()
 
     }
+    private fun getPos(holder: RecyclerView.ViewHolder) : Int {
+        val pos = holder.bindingAdapterPosition
+        // notifyDataSetChanged was called, so position is not known
+        if( pos == RecyclerView.NO_POSITION) {
+            return holder.absoluteAdapterPosition
+        }
+        return pos
+    }
+
+private fun initTouchHelper(): ItemTouchHelper {
+    val simpleItemTouchCallback =
+        object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.START)
+        {
+            override fun onMove(recyclerView: RecyclerView,
+                                viewHolder: RecyclerView.ViewHolder,
+                                target: RecyclerView.ViewHolder): Boolean {
+                return true
+            }
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder,
+                                  direction: Int) {
+                val position = getPos(viewHolder)
+                Log.d(javaClass.simpleName, "Swipe delete $position")
+                viewModel.removePostAt(position)
+            }
+        }
+    return ItemTouchHelper(simpleItemTouchCallback)
+}
 
 //    private fun initAdapter(binding: FragmentRvBinding) {
     private fun initAdapter(binding: FragmentProfileBinding) {
+        val rv = binding.postsRecyclerView
         val postRowAdapter = PostRowAdapter(requireActivity(), viewModel)
-        binding.postsRecyclerView.adapter = postRowAdapter
-        // XXX Write me, observe posts
+        rv.adapter = postRowAdapter
+        initTouchHelper().attachToRecyclerView(rv)
+
+    // XXX Write me, observe posts
         viewModel.observeFilteredUserPosts().observe(viewLifecycleOwner) {
             if (it != null) {
                 println(it.size)
