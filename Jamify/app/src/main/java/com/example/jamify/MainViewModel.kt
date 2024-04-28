@@ -390,6 +390,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application){
             // database sets firestoreID
         )
         dbHelp.createNote(post,postList, sortInfo.value!!)
+
     }
     fun removePostAt(position: Int) {
         //SSS

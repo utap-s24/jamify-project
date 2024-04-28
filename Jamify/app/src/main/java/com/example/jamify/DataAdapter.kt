@@ -30,7 +30,16 @@ class DataAdapter(
 
         init {
             // Click listener for the play button
-            songRowBinding.musicplayerPlayButton.setOnClickListener {
+//            songRowBinding.musicplayerPlayButton.setOnClickListener {
+//                clickListener(bindingAdapterPosition)
+//            }
+
+            itemView.setOnClickListener {
+                // TODO: not sure about this either
+                var prevSongSelected = viewModel.selectedIndex
+//                viewModel.selectedIndex = bindingAdapterPosition
+                viewModel.selectedIndex = bindingAdapterPosition
+
                 clickListener(bindingAdapterPosition)
             }
         }

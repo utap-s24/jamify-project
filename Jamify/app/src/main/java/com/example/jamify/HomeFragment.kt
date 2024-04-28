@@ -79,6 +79,7 @@ class HomeFragment : Fragment() {
         // XXX Write me, observe posts
         viewModel.observePublicPosts().observe(viewLifecycleOwner) {
            postRowAdapter.submitList(it)
+            postRowAdapter.notifyDataSetChanged()
         }
     }
 
