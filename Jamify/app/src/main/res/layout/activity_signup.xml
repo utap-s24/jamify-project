@@ -37,7 +37,7 @@
                 android:fontFamily="@font/circular_spotify_text_medium"
                 android:textSize="80sp"
                 android:gravity="center"
-                android:textColor="@color/logo_purple"
+                android:textColor="@color/purple"
                 />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -55,6 +55,7 @@
                 android:text="User Name"
                 android:textStyle="bold"
                 android:textSize="16sp"
+                android:textColor="@color/off_white"
                 android:paddingStart="3dp"
                 />
 
@@ -64,6 +65,7 @@
                 android:layout_height="60dp"
                 android:layout_marginTop="4dp"
                 android:layout_marginEnd="10dp"
+                android:textColor="@color/off_white"
                 android:padding="8dp"
                 android:hint="Display name"
                 android:drawableLeft="@drawable/baseline_person_24"
@@ -80,6 +82,7 @@
                 android:textStyle="bold"
                 android:textSize="16sp"
                 android:paddingStart="3dp"
+                android:textColor="@color/off_white"
                 />
 
             <EditText
@@ -107,7 +110,7 @@
                 android:textStyle="bold"
                 android:textSize="16sp"
                 app:layout_constraintTop_toBottomOf="@id/email_editText"
-
+                android:textColor="@color/off_white"
                 />
 
             <EditText
@@ -146,6 +149,7 @@
                 android:layout_marginBottom="8dp"
                 android:text="Sign Up"
                 android:textSize="16sp"
+                android:textColor="@color/off_white"
                 android:background="@drawable/rounded_oval"
                 app:layout_constraintBottom_toBottomOf="parent"
                 />
@@ -153,30 +157,27 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:gravity="center"> <!-- Center the contents of the LinearLayout -->
 
-<!--                wrapping content for height cuts off ends of letters-->
+                <!--                wrapping content for height cuts off ends of letters-->
                 <TextView
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="25dp"
                     android:layout_marginTop="8dp"
                     android:paddingEnd="0dp"
                     android:text="Already have an account?"
-                    android:textSize="16sp"
-                    android:layout_gravity="center"
-                    android:layout_weight="0.7"
-                    />
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/login_redirect_text"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="25dp"
                     android:layout_marginTop="8dp"
+                    android:layout_marginStart="5dp"
                     android:text="Login"
                     android:textSize="16sp"
-                    android:textColor="@color/logo_purple"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"/>
+                    android:textColor="@color/logo_purple" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

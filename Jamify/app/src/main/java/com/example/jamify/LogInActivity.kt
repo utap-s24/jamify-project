@@ -47,7 +47,6 @@ class LogInActivity : AppCompatActivity() {
                 if(password.isNotEmpty()){
                     firebaseAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(){
                         if (it.isSuccessful){
-                            binding.missingEmailPassTextview.text = "Logging in"
                             //TODO: does this redirect us to the home frag?
                             val intent = Intent(this, MainActivity::class.java)
                             startActivity(intent)

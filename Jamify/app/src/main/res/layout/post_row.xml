@@ -37,7 +37,7 @@
                 android:orientation="vertical"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toEndOf="@id/musicplayerPlayButton"
-                app:layout_constraintEnd_toEndOf="parent">
+                app:layout_constraintEnd_toStartOf="@id/postVisibility">
                 <TextView
                     android:id="@+id/songTitle"
                     android:textColor="@color/off_white"
@@ -59,6 +59,15 @@
                     android:text="  -  Habibi Ana"/>
 
             </LinearLayout>
+            <ImageView
+                android:id="@+id/postVisibility"
+                android:layout_marginEnd="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:src="@drawable/baseline_public_24"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.cardview.widget.CardView

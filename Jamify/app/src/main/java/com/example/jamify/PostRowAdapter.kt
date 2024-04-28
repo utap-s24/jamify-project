@@ -83,6 +83,11 @@ class PostRowAdapter(val context: Activity, private val viewModel: MainViewModel
                     rowBinding.songTitle.text = songInfo.title
                     rowBinding.postUsernameTextView.text = postInfo?.ownerName
                     rowBinding.postCaption.text = postInfo.caption
+                    if(postInfo.private){
+                        rowBinding.postVisibility.setImageResource(R.drawable.outline_public_off_24)
+                    } else {
+                        rowBinding.postVisibility.setImageResource(R.drawable.baseline_public_24)
+                    }
 
                     if (viewModel.getSongPlayingPos() == position) {
                         rowBinding.musicplayerPlayButton.setImageResource(R.drawable.baseline_pause_circle_24)
