@@ -81,7 +81,8 @@ class DataAdapter(
 
             rowBinding.songAuthor.text = currentData.artist.name
                 // Load song information
-            Picasso.get().load(currentData.album.cover)
+            Picasso.get().load(currentData.album.cover).into(rowBinding.musicImage)
+
 
 
             rowBinding.musicplayerPlayButton.setOnClickListener {
