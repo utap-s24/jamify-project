@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.jamify.databinding.PostRowBinding
 import com.example.jamify.model.PostMeta
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.runBlocking
 
 /**
@@ -81,6 +82,7 @@ class PostRowAdapter(val context: Activity, private val viewModel: MainViewModel
 
                     }
 
+                    loadMostRecentImage(postInfo.ownerUid, rowBinding)
                     // get song information
 
 //                rowBinding.songAuthor.text = songInfo?.artist?.name
@@ -92,7 +94,15 @@ class PostRowAdapter(val context: Activity, private val viewModel: MainViewModel
         }
     }
 
+    private fun loadMostRecentImage(uid: String, rowBinding: PostRowBinding) {
+        val databaseReference = FirebaseStorage.getInstance().reference
+        val recentImageRef = databaseReference.child("pfps").child("${uid}.jpg")
 
+        recentImageRef.downloadUrl.addOnSuccessListener { uri ->
+            viewModel.glideFetchPfp(uri.toString(), rowBinding.postUserPhoto)
+        }
+
+    }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
         val rowBinding = PostRowBinding.inflate(LayoutInflater.from(parent.context),
             parent, false)
