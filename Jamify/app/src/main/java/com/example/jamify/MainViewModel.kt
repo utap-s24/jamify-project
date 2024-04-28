@@ -369,8 +369,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application){
         return profileImageFile.value!!
     }
 
-    fun getImageURI(): Uri {
-        return imageUpload.value!!
+    fun getImageURI(): Uri? {
+        return imageUpload.value
     }
 
     // Create a post and upload image to storage
