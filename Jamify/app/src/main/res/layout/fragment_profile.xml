@@ -39,6 +39,7 @@
             app:layout_constraintTop_toTopOf="parent"
             android:background="@drawable/rounded_oval"
             />
+
         <com.google.android.material.imageview.ShapeableImageView
             android:layout_marginTop="7dp"
             android:id="@+id/pofilePicImageView"

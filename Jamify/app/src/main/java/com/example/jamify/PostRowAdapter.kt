@@ -85,6 +85,7 @@ class PostRowAdapter(val context: Activity, private val viewModel: MainViewModel
                     rowBinding.postCaption.text = postInfo.caption
                     if(postInfo.private){
                         rowBinding.postVisibility.setImageResource(R.drawable.baseline_public_off_24)
+
                     } else {
                         rowBinding.postVisibility.setImageResource(R.drawable.baseline_public_24)
                     }
