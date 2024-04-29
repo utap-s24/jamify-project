@@ -72,7 +72,9 @@ class PostRowAdapter(val context: Activity, private val viewModel: MainViewModel
                         holder.rowBinding.musicplayerPlayButton.setImageResource(R.drawable.ic_play_arrow_24)
                     }
                 }
-
+//                rowBinding.postUsernameTextView.text = postInfo?.ownerName
+//                rowBinding.postCaption.text = postInfo.caption
+//                loadMostRecentImage(postInfo.ownerUid, rowBinding)
 
                 runBlocking {
 //                    viewModel.retrieveSongInfo(postInfo.songId)
@@ -140,7 +142,7 @@ class PostRowAdapter(val context: Activity, private val viewModel: MainViewModel
 
                     }
 
-                    loadMostRecentImage(postInfo.ownerUid, rowBinding)
+                     loadMostRecentImage(postInfo.ownerUid, rowBinding)
 
                     // check if user's UID is in the array of likes
                     if (postInfo.likes.contains(auth.currentUser?.uid)) {
