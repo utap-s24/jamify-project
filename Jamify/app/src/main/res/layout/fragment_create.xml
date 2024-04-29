@@ -1,12 +1,10 @@
-
-
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:tools="http://schemas.android.com/tools"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-xmlns:app="http://schemas.android.com/apk/res-auto"
-android:layout_margin="40dp"
-tools:context=".CreateFragment">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="40dp"
+    tools:context=".CreateFragment">
 
     <TextView
         android:id="@+id/searchSongTitle"
@@ -220,7 +218,7 @@ tools:context=".CreateFragment">
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/switchPrivacy"
             app:layout_constraintBottom_toBottomOf="parent"
-           app:layout_constraintTop_toBottomOf="@+id/captionText"
+            app:layout_constraintTop_toBottomOf="@+id/captionText"
             ></Button>
 
 

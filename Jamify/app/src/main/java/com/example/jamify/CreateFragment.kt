@@ -31,6 +31,7 @@ import java.io.IOException
 import java.io.InputStream
 import java.lang.Long
 import android.provider.OpenableColumns
+import android.widget.Toast
 import androidx.core.widget.doAfterTextChanged
 import androidx.navigation.fragment.findNavController
 import kotlinx.coroutines.runBlocking
@@ -125,8 +126,9 @@ class CreateFragment : Fragment() {
 
         // on pressing create, will upload image to firebase storage and will create firebase doc
         binding.create.setOnClickListener {
-            if (viewModel.songName.value != "") {
-                if (viewModel.getImageFile().isFile()){
+            val imageResource = binding.image.resources
+            if (viewModel.songName.value != "" && viewModel.getImageURI() != Uri.EMPTY
+                && binding.captionText.text.isNotEmpty()) {
                     // upload image to firebase storage
                     // create firebase doc
 
@@ -140,7 +142,9 @@ class CreateFragment : Fragment() {
                     binding.captionText.text.clear()
                     binding.image.setImageResource(R.drawable.baseline_image_search_24)
                     findNavController().navigate(R.id.homeFragment)
-                }
+            } else {
+//                Log.d()
+                Toast.makeText(context, "Song selected, image, and caption cannot be empty", Toast.LENGTH_LONG).show()
             }
             // otherwise, show popup to prompt user to select a song
         }
@@ -236,4 +240,11 @@ private fun getFileName(): String? {
         val mimeType  = context?.contentResolver?.getType(uri)
         return mimeType?.substringAfter("/") ?: ""
     }
+
+    override fun onStop() {
+        super.onStop()
+        viewModel.mediaPlayer.stop()
+        viewModel.setSongPlayingPos(-1)
+    }
+
 }

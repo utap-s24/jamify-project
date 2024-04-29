@@ -369,8 +369,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application){
         return profileImageFile.value!!
     }
 
-    fun getImageURI(): Uri {
-        return imageUpload.value!!
+    fun getImageURI(): Uri? {
+        return imageUpload.value
     }
 
     // Create a post and upload image to storage
@@ -390,6 +390,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application){
             // database sets firestoreID
         )
         dbHelp.createNote(post,postList, sortInfo.value!!)
+
     }
     fun removePostAt(position: Int) {
         //SSS

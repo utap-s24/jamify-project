@@ -4,32 +4,32 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".ProfileActivity"
+    tools:context=".ProfileFragment"
     android:layout_margin="8dp"
     android:orientation="vertical">
 
-<!--    <LinearLayout-->
-<!--        android:id="@+id/signOutSection"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:orientation="horizontal"-->
-<!--        android:layout_margin="8dp">-->
-<!--        <Button-->
-<!--            -->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:text="LOG OUT"/>-->
+    <!--    <LinearLayout-->
+    <!--        android:id="@+id/signOutSection"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:orientation="horizontal"-->
+    <!--        android:layout_margin="8dp">-->
+    <!--        <Button-->
+    <!--            -->
+    <!--            android:layout_width="match_parent"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:text="LOG OUT"/>-->
 
-<!--    </LinearLayout>-->
+    <!--    </LinearLayout>-->
 
-<androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/ProfileUsernameMeta"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_margin="8dp">
-<!--        Elevation = reletive depth btw 2 surfaces-->
-<!--        android:elevation="6dp"-->
+        <!--        Elevation = reletive depth btw 2 surfaces-->
+        <!--        android:elevation="6dp"-->
 
         <Button
             android:id="@+id/logoutButton"
@@ -38,7 +38,8 @@
             android:text="LOG OUT"
             app:layout_constraintTop_toTopOf="parent"
             android:background="@drawable/rounded_oval"
-        />
+            />
+
         <com.google.android.material.imageview.ShapeableImageView
             android:layout_marginTop="7dp"
             android:id="@+id/pofilePicImageView"
@@ -54,13 +55,14 @@
 
         <TextView
             android:id="@+id/usernameTextView"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:textColor="@color/purple"
             android:text="john doe"
             android:textSize="50sp"
             android:fontFamily="@font/circular_spotify_text_bold"
+            app:layout_constraintEnd_toEndOf="@+id/ProfileUsernameMeta"
             app:layout_constraintStart_toEndOf="@id/pofilePicImageView"
             app:layout_constraintTop_toTopOf="@id/pofilePicImageView"
             app:layout_constraintBottom_toBottomOf="@id/pofilePicImageView"
@@ -207,9 +209,12 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_weight="1"
         android:scrollbars="vertical"
-        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
         app:spanCount="2"
         android:layout_gravity="center"
         />
+
+<!--    app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"-->
+
 
 </LinearLayout>
